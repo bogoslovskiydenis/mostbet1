@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import pragmaticBanner from "~/assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg"
 </script>
 
 <template>
@@ -53,7 +54,11 @@ import { Icon } from '@iconify/vue'
 
     <section class="pragmatic__hero">
       <div class="pragmatic__heroImage">
-        <!-- image placeholder, will be replaced with real banner -->
+        <img
+          :src="pragmaticBanner"
+          alt="MostBet Pragmatic Play Drops &amp; Wins"
+          loading="lazy"
+        >
       </div>
     </section>
 
@@ -318,8 +323,13 @@ import { Icon } from '@iconify/vue'
 .pragmatic__heroImage {
   width: 100%;
   border-radius: 16px;
-  background: #f0f4ff;
-  padding-bottom: 52%;
+  overflow: hidden;
+}
+
+.pragmatic__heroImage img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .pragmatic__sectionTitle {
@@ -375,10 +385,6 @@ import { Icon } from '@iconify/vue'
 .pragmatic__table thead th {
   background: #003366;
   color: #fff;
-}
-
-.pragmatic__table tbody tr:nth-child(even) td {
-  background: #f4f4f4;
 }
 
 @media (max-width: 599px) {

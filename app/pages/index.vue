@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useI18n } from '#imports'
-import { Icon } from '@iconify/vue'
+import {useI18n} from '#imports'
+import {Icon} from '@iconify/vue'
 import banner from "../assets/images/main/banner_img.webp"
 import bannerReg from "../assets/images/main/registration.webp"
 import bannerPromo from "../assets/images/main/promocode.webp"
 import bannerLogin from "../assets/images/main/login.webp"
+import pragmaticBanner from "../assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg"
 
 const promos = [
   {
@@ -73,7 +74,7 @@ const promos = [
   }
 ]
 
-const { t } = useI18n({ useScope: 'global' })
+const {t} = useI18n({useScope: 'global'})
 </script>
 
 <template>
@@ -89,10 +90,10 @@ const { t } = useI18n({ useScope: 'global' })
       </div>
       <div class="hero__media">
         <img
-          :src="banner"
-          alt="MostBet"
-          loading="lazy"
-          class="hero__image"
+            :src="banner"
+            alt="MostBet"
+            loading="lazy"
+            class="hero__image"
         >
       </div>
     </div>
@@ -102,7 +103,7 @@ const { t } = useI18n({ useScope: 'global' })
           {{ t('header.register') }}
         </span>
         <span class="hero__btnArrow" aria-hidden="true">
-          <Icon icon="mdi:arrow-right" class="hero__btnIcon" />
+          <Icon icon="mdi:arrow-right" class="hero__btnIcon"/>
         </span>
       </a>
       <a href="#promo-code" class="hero__btn hero__btn--ghost">
@@ -110,7 +111,7 @@ const { t } = useI18n({ useScope: 'global' })
           {{ t('header.promoCode') }}
         </span>
         <span class="hero__btnArrow" aria-hidden="true">
-          <Icon icon="mdi:ticket-percent" class="hero__btnIcon" />
+          <Icon icon="mdi:ticket-percent" class="hero__btnIcon"/>
         </span>
       </a>
       <a href="#sign-in" class="hero__btn hero__btn--outline">
@@ -118,7 +119,7 @@ const { t } = useI18n({ useScope: 'global' })
           {{ t('header.signIn') }}
         </span>
         <span class="hero__btnArrow" aria-hidden="true">
-          <Icon icon="mdi:login" class="hero__btnIcon" />
+          <Icon icon="mdi:login" class="hero__btnIcon"/>
         </span>
       </a>
     </div>
@@ -128,10 +129,10 @@ const { t } = useI18n({ useScope: 'global' })
     <article id="register" class="info-card">
       <div class="info-card__imageWrapper">
         <img
-          :src="bannerReg"
-          alt="MostBet Registration"
-          loading="lazy"
-          class="info-card__image"
+            :src="bannerReg"
+            alt="MostBet Registration"
+            loading="lazy"
+            class="info-card__image"
         >
       </div>
       <div class="info-card__content">
@@ -140,7 +141,8 @@ const { t } = useI18n({ useScope: 'global' })
           Access the MostBet register screen to quickly open a new account and claim a welcome bonus.
         </p>
         <p class="info-card__text">
-          As soon as you register you can start betting at the sportsbook, where live betting on over 30 different sports is available, as well as free live streaming for active members.
+          As soon as you register you can start betting at the sportsbook, where live betting on over 30 different
+          sports is available, as well as free live streaming for active members.
         </p>
         <p class="info-card__text">
           Play at the MostBet Casino where you will find thousands of games to choose from.
@@ -154,10 +156,10 @@ const { t } = useI18n({ useScope: 'global' })
     <article id="promo-code" class="info-card">
       <div class="info-card__imageWrapper">
         <img
-          :src="bannerPromo"
-          alt="MostBet Promo Code"
-          loading="lazy"
-          class="info-card__image"
+            :src="bannerPromo"
+            alt="MostBet Promo Code"
+            loading="lazy"
+            class="info-card__image"
         >
       </div>
       <div class="info-card__content">
@@ -166,7 +168,8 @@ const { t } = useI18n({ useScope: 'global' })
           Use the MostBet promo code HUGE when registering to get the biggest available welcome bonus.
         </p>
         <p class="info-card__text">
-          A 150% deposit bonus can be claimed if you are registering with MostBet for the first time, with bonus offers available at the sportsbook and casino.
+          A 150% deposit bonus can be claimed if you are registering with MostBet for the first time, with bonus offers
+          available at the sportsbook and casino.
         </p>
         <p class="info-card__text">
           Use the promo code HUGE when completing the registration form to get your bonus.
@@ -180,16 +183,17 @@ const { t } = useI18n({ useScope: 'global' })
     <article id="sign-in" class="info-card">
       <div class="info-card__imageWrapper">
         <img
-          :src="bannerLogin"
-          alt="MostBet Login"
-          loading="lazy"
-          class="info-card__image"
+            :src="bannerLogin"
+            alt="MostBet Login"
+            loading="lazy"
+            class="info-card__image"
         >
       </div>
       <div class="info-card__content">
         <h2 class="info-card__title">MostBet Login</h2>
         <p class="info-card__text">
-          MostBet is available all over the world. Thousands of players are active at the sportsbook and casino every day.
+          MostBet is available all over the world. Thousands of players are active at the sportsbook and casino every
+          day.
         </p>
         <p class="info-card__text">
           You can access MostBet login on your computer or mobile device, or download the official mobile app.
@@ -214,58 +218,58 @@ const { t } = useI18n({ useScope: 'global' })
     <div class="info-table__wrapper">
       <table class="info-table__table">
         <tbody>
-          <tr>
-            <th>Website</th>
-            <td><a href="#" class="info-table__link">MostBet.com</a></td>
-          </tr>
-          <tr>
-            <th>Products</th>
-            <td>Sports Betting, Casino, Live Casino, Aviator, Poker, Games</td>
-          </tr>
-          <tr>
-            <th>Promo Code</th>
-            <td><strong>HUGE</strong></td>
-          </tr>
-          <tr>
-            <th>Deposit Bonus</th>
-            <td>150% (must deposit within 15 minutes of registration otherwise 125%)</td>
-          </tr>
-          <tr>
-            <th>Bonus Value</th>
-            <td>Up to $300 plus up to 250 free spins</td>
-          </tr>
-          <tr>
-            <th>Established</th>
-            <td>2009</td>
-          </tr>
-          <tr>
-            <th>Accepted Crypto</th>
-            <td>Bitcoin, Dogecoin, Ethereum, Litecoin and others</td>
-          </tr>
-          <tr>
-            <th>Currencies</th>
-            <td>US Dollar, Canadian Dollar, Euros and many others</td>
-          </tr>
-          <tr>
-            <th>Website Languages</th>
-            <td>Over 25 including English, Spanish, Portuguese, Russian, Ukrainian, French, German and Italian</td>
-          </tr>
-          <tr>
-            <th>Mobile App</th>
-            <td>Yes – Downloads on Android and iOS available</td>
-          </tr>
-          <tr>
-            <th>Live Support</th>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <th>Live Streaming</th>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <th>Minimum Deposit</th>
-            <td>$1 or currency equivalent ($15 to claim welcome bonus)</td>
-          </tr>
+        <tr>
+          <th>Website</th>
+          <td><a href="#" class="info-table__link">MostBet.com</a></td>
+        </tr>
+        <tr>
+          <th>Products</th>
+          <td>Sports Betting, Casino, Live Casino, Aviator, Poker, Games</td>
+        </tr>
+        <tr>
+          <th>Promo Code</th>
+          <td><strong>HUGE</strong></td>
+        </tr>
+        <tr>
+          <th>Deposit Bonus</th>
+          <td>150% (must deposit within 15 minutes of registration otherwise 125%)</td>
+        </tr>
+        <tr>
+          <th>Bonus Value</th>
+          <td>Up to $300 plus up to 250 free spins</td>
+        </tr>
+        <tr>
+          <th>Established</th>
+          <td>2009</td>
+        </tr>
+        <tr>
+          <th>Accepted Crypto</th>
+          <td>Bitcoin, Dogecoin, Ethereum, Litecoin and others</td>
+        </tr>
+        <tr>
+          <th>Currencies</th>
+          <td>US Dollar, Canadian Dollar, Euros and many others</td>
+        </tr>
+        <tr>
+          <th>Website Languages</th>
+          <td>Over 25 including English, Spanish, Portuguese, Russian, Ukrainian, French, German and Italian</td>
+        </tr>
+        <tr>
+          <th>Mobile App</th>
+          <td>Yes – Downloads on Android and iOS available</td>
+        </tr>
+        <tr>
+          <th>Live Support</th>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <th>Live Streaming</th>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <th>Minimum Deposit</th>
+          <td>$1 or currency equivalent ($15 to claim welcome bonus)</td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -279,7 +283,8 @@ const { t } = useI18n({ useScope: 'global' })
       New players can use the MostBet promo code HUGE when registering.
     </p>
     <p class="promo-info__text">
-      The code allows new players to get a 150% deposit bonus when making a deposit. Up to $300 in bonus money can be claimed by using this code when completing the registration form.
+      The code allows new players to get a 150% deposit bonus when making a deposit. Up to $300 in bonus money can be
+      claimed by using this code when completing the registration form.
     </p>
 
     <h3 class="promo-info__subtitle">
@@ -288,23 +293,23 @@ const { t } = useI18n({ useScope: 'global' })
     <div class="promo-info__tableWrapper">
       <table class="promo-info__table">
         <thead>
-          <tr>
-            <th>Product</th>
-            <th>Promo Code</th>
-            <th>Bonus Offer</th>
-          </tr>
+        <tr>
+          <th>Product</th>
+          <th>Promo Code</th>
+          <th>Bonus Offer</th>
+        </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>MostBet Sports</td>
-            <td><strong>HUGE</strong></td>
-            <td>$300</td>
-          </tr>
-          <tr>
-            <td>MostBet Casino</td>
-            <td><strong>HUGE</strong></td>
-            <td>$300 plus 250 free spins</td>
-          </tr>
+        <tr>
+          <td>MostBet Sports</td>
+          <td><strong>HUGE</strong></td>
+          <td>$300</td>
+        </tr>
+        <tr>
+          <td>MostBet Casino</td>
+          <td><strong>HUGE</strong></td>
+          <td>$300 plus 250 free spins</td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -322,8 +327,10 @@ const { t } = useI18n({ useScope: 'global' })
       Claiming the MostBet bonus is quick and easy.
     </p>
     <p class="promo-info__text">
-      Use the links on this page to visit the official MostBet website and click the ‘Sign Up’ button. Fill in the short registration form that appears on your screen.
-      This form takes less than a minute to complete. On the form you will be asked if you have a promo code. Type in the HUGE code here.
+      Use the links on this page to visit the official MostBet website and click the ‘Sign Up’ button. Fill in the short
+      registration form that appears on your screen.
+      This form takes less than a minute to complete. On the form you will be asked if you have a promo code. Type in
+      the HUGE code here.
     </p>
     <p class="promo-info__text">
       You can then get the bonus and start placing your bets!
@@ -336,7 +343,9 @@ const { t } = useI18n({ useScope: 'global' })
       <li><strong>Quick registration:</strong> Click the ‘Sign Up’ button to quickly open an account.</li>
       <li><strong>Register via mobile phone:</strong> Enter your mobile number when registering.</li>
       <li><strong>Register via email:</strong> Provide an email address when registering.</li>
-      <li><strong>Register via social media:</strong> You can link your Google, Telegram, Twitter/X or Facebook account to your MostBet account.</li>
+      <li><strong>Register via social media:</strong> You can link your Google, Telegram, Twitter/X or Facebook account
+        to your MostBet account.
+      </li>
     </ul>
   </section>
 
@@ -345,32 +354,39 @@ const { t } = useI18n({ useScope: 'global' })
       MostBet Official Website
     </h2>
     <p class="official-info__text">
-      MostBet is available worldwide, offering online sports betting, live streaming, casino games and lots more to players in many different countries.
+      MostBet is available worldwide, offering online sports betting, live streaming, casino games and lots more to
+      players in many different countries.
     </p>
     <p class="official-info__text">
-      MostBet is licensed and accepts players from Canada and Latin America, as well as Africa, Asia, many European countries and elsewhere.
+      MostBet is licensed and accepts players from Canada and Latin America, as well as Africa, Asia, many European
+      countries and elsewhere.
     </p>
     <p class="official-info__text">
-      As soon as you complete the MostBet registration process, you will be able to bet on over 30 different sports. As an active player, you can also enjoy free live streaming sport on many sports.
+      As soon as you complete the MostBet registration process, you will be able to bet on over 30 different sports. As
+      an active player, you can also enjoy free live streaming sport on many sports.
     </p>
     <p class="official-info__text">
       The MostBet casino is home to thousands of different games.
     </p>
     <p class="official-info__text">
-      As MostBet is a crypto-friendly betting site, you can deposit and bet using Bitcoin and other crypto coins, in addition to numerous other payment methods.
+      As MostBet is a crypto-friendly betting site, you can deposit and bet using Bitcoin and other crypto coins, in
+      addition to numerous other payment methods.
     </p>
     <p class="official-info__text">
-      The sportsbook and casino are both available on PC and mobile and in multiple languages, while a dedicated mobile app is also available to players.
+      The sportsbook and casino are both available on PC and mobile and in multiple languages, while a dedicated mobile
+      app is also available to players.
     </p>
     <p class="official-info__text">
-      The MostBet promo code is HUGE. New players should use this code when opening an account to claim the biggest bonus offer. Up to $300 bonus is available!
+      The MostBet promo code is HUGE. New players should use this code when opening an account to claim the biggest
+      bonus offer. Up to $300 bonus is available!
     </p>
 
     <h3 class="official-info__subtitle">
       MostBet Payment Methods
     </h3>
     <p class="official-info__text">
-      You can fund your account in lots of different ways. You can deposit with crypto, credit cards, debit cards and many other payment methods.
+      You can fund your account in lots of different ways. You can deposit with crypto, credit cards, debit cards and
+      many other payment methods.
     </p>
     <p class="official-info__text">
       Popular deposit options with MostBet players are:
@@ -394,15 +410,20 @@ const { t } = useI18n({ useScope: 'global' })
     </h2>
     <div class="promo-grid__list">
       <a
-        v-for="promo in promos"
-        :key="promo.id"
-        class="promo-card"
-        :href="promo.href"
-        target="_blank"
-        rel="noopener"
+          v-for="promo in promos"
+          :key="promo.id"
+          class="promo-card"
+          :href="promo.href"
+          target="_blank"
+          rel="noopener"
       >
         <div class="promo-card__image">
-          <!-- image placeholder, will be replaced later -->
+          <img
+              v-if="promo.id === 'pragmatic-prize-pool'"
+              :src="pragmaticBanner"
+              alt="MostBet Pragmatic Play Drops &amp; Wins"
+              loading="lazy"
+          >
         </div>
         <div class="promo-card__body">
           <div class="promo-card__badge">
@@ -739,6 +760,14 @@ const { t } = useI18n({ useScope: 'global' })
 .promo-card__image {
   height: 140px;
   background: #f0f4ff;
+  overflow: hidden;
+}
+
+.promo-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .promo-card__body {
@@ -760,12 +789,13 @@ const { t } = useI18n({ useScope: 'global' })
   margin: 0;
   font-size: 15px;
   font-weight: 700;
+  color: black;
 }
 
 .promo-card__text {
   margin: 0;
   font-size: 13px;
-  color: var(--muted);
+  color: black;
 }
 
 .promo-card__cta {
