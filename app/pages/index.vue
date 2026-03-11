@@ -14,7 +14,7 @@ const promos = [
     titleKey: 'home.promos.pragmatic.title',
     textKey: 'home.promos.pragmatic.text',
     ctaKey: 'home.promos.pragmatic.cta',
-    href: '/en/casino/mostbet-pragmatic-play'
+    href: '/casino/mostbet-pragmatic-play'
   },
   {
     id: 'big-slots-prize',

@@ -1,41 +1,94 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import pragmaticBanner from "~/assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg"
+import { useI18n } from '#imports'
+import pragmaticBanner from '~/assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg'
+
+const { t } = useI18n({ useScope: 'global' })
+
+const bulletKeys = [
+  'pragmatic.bullets.0',
+  'pragmatic.bullets.1',
+  'pragmatic.bullets.2',
+  'pragmatic.bullets.3',
+]
+
+const eventStepKeys = [
+  'pragmatic.event.steps.0',
+  'pragmatic.event.steps.1',
+  'pragmatic.event.steps.2',
+  'pragmatic.event.steps.3',
+  'pragmatic.event.steps.4',
+]
+
+const dailyRewardKeys = [
+  'pragmatic.dailyRewards.0',
+  'pragmatic.dailyRewards.1',
+  'pragmatic.dailyRewards.2',
+  'pragmatic.dailyRewards.3',
+  'pragmatic.dailyRewards.4',
+  'pragmatic.dailyRewards.5',
+]
+
+const slotKeys = [
+  'pragmatic.slots.list.0',
+  'pragmatic.slots.list.1',
+  'pragmatic.slots.list.2',
+  'pragmatic.slots.list.3',
+  'pragmatic.slots.list.4',
+  'pragmatic.slots.list.5',
+  'pragmatic.slots.list.6',
+  'pragmatic.slots.list.7',
+  'pragmatic.slots.list.8',
+  'pragmatic.slots.list.9',
+]
+
+const termKeys = [
+  'pragmatic.terms.list.0',
+  'pragmatic.terms.list.1',
+  'pragmatic.terms.list.2',
+  'pragmatic.terms.list.3',
+  'pragmatic.terms.list.4',
+  'pragmatic.terms.list.5',
+  'pragmatic.terms.list.6',
+  'pragmatic.terms.list.7',
+  'pragmatic.terms.list.8',
+  'pragmatic.terms.list.9',
+]
 </script>
 
 <template>
   <main class="pragmatic">
     <header class="pragmatic__header">
       <nav class="pragmatic__breadcrumbs">
-        <a href="/" class="pragmatic__crumb pragmatic__crumb--home">
+        <NuxtLink to="/" class="pragmatic__crumb pragmatic__crumb--home">
           <Icon icon="mdi:home-outline" class="pragmatic__homeIcon" />
-          <span>Home</span>
-        </a>
+          <span>{{ t('pragmatic.breadcrumbs.home') }}</span>
+        </NuxtLink>
         <span class="pragmatic__crumb pragmatic__crumb--sep">
           /
         </span>
         <span class="pragmatic__crumb">
-          Casino
+          {{ t('pragmatic.breadcrumbs.casino') }}
         </span>
         <span class="pragmatic__crumb pragmatic__crumb--sep">
           /
         </span>
         <span class="pragmatic__crumb pragmatic__crumb--current">
-          MostBet Pragmatic Play
+          {{ t('pragmatic.breadcrumbs.current') }}
         </span>
       </nav>
 
       <h1 class="pragmatic__title">
-        MostBet Pragmatic Play Drops &amp; Wins – €25 Million Prize Pool
+        {{ t('pragmatic.title') }}
       </h1>
 
       <div class="pragmatic__meta">
         <span class="pragmatic__author">
-          By Alex Waite
+          {{ t('pragmatic.author') }}
         </span>
         <span class="pragmatic__dot" />
         <span class="pragmatic__date">
-          05 Mar 2026
+          {{ t('pragmatic.date') }}
         </span>
         <button class="pragmatic__share" type="button">
           <Icon icon="mdi:share-variant" class="pragmatic__shareIcon" />
@@ -45,10 +98,12 @@ import pragmaticBanner from "~/assets/images/main/Pragmatic-Play-Drops-and-Wins-
 
     <section class="pragmatic__intro">
       <ul class="pragmatic__bullets">
-        <li>Play MostBet Pragmatic Play Drops &amp; Wins for a share of €25 million.</li>
-        <li>Spin slots like Sweet Bonanza, Sugar Rush and Big Bass Bonanza.</li>
-        <li>Cash and free spins prizes are available on the best online slots.</li>
-        <li>Register using MostBet promo code HUGE for a welcome reward.</li>
+        <li
+          v-for="key in bulletKeys"
+          :key="key"
+        >
+          {{ t(key) }}
+        </li>
       </ul>
     </section>
 
@@ -56,7 +111,7 @@ import pragmaticBanner from "~/assets/images/main/Pragmatic-Play-Drops-and-Wins-
       <div class="pragmatic__heroImage">
         <img
           :src="pragmaticBanner"
-          alt="MostBet Pragmatic Play Drops &amp; Wins"
+          :alt="t('pragmatic.heroAlt')"
           loading="lazy"
         >
       </div>
@@ -64,82 +119,81 @@ import pragmaticBanner from "~/assets/images/main/Pragmatic-Play-Drops-and-Wins-
 
     <section class="pragmatic__content">
       <h2 class="pragmatic__sectionTitle">
-        Play the MostBet Pragmatic Play Drops &amp; Wins Event
+        {{ t('pragmatic.event.title') }}
       </h2>
       <p class="pragmatic__text">
-        The MostBet Pragmatic Play event runs from March 4, 2026, to April 1, 2026.
+        {{ t('pragmatic.event.p1') }}
       </p>
       <p class="pragmatic__text">
-        To enter this MostBet casino tournament, players must complete the following steps:
+        {{ t('pragmatic.event.p2') }}
       </p>
       <ol class="pragmatic__list pragmatic__list--numbered">
-        <li>Register or log in to your MostBet account.</li>
-        <li>Visit the casino lobby.</li>
-        <li>Launch participating Pragmatic Play slots.</li>
-        <li>Spin the reels on games like Sweet Bonanza, Gates of Olympus and more.</li>
-        <li>Collect wheel pieces or score points in the daily tournaments.</li>
+        <li
+          v-for="key in eventStepKeys"
+          :key="key"
+        >
+          {{ t(key) }}
+        </li>
       </ol>
 
       <h2 class="pragmatic__sectionTitle">
-        Pragmatic Play Prizes
+        {{ t('pragmatic.prizes.title') }}
       </h2>
       <p class="pragmatic__text">
-        Players at MostBet casino can win from two prize Drops and Wins promotions during the promotional period.
+        {{ t('pragmatic.prizes.p1') }}
       </p>
 
       <h3 class="pragmatic__subTitle">
-        Weekly Wheel Drops
+        {{ t('pragmatic.prizes.weeklyTitle') }}
       </h3>
       <p class="pragmatic__text">
-        Any spin on participating Pragmatic Play slots can activate a piece of the prize wheel.
-        Players must collect three pieces of the wheel. Once the wheel is completed, the player becomes eligible
-        for a reward from the €350,000 weekly prize pool, with 96,900 prizes available.
+        {{ t('pragmatic.prizes.weeklyText') }}
       </p>
 
       <div class="pragmatic__tableWrapper">
         <table class="pragmatic__table">
           <thead>
             <tr>
-              <th>Number of Winners</th>
-              <th>Pragmatic Play Reward</th>
+              <th>{{ t('pragmatic.prizes.tableHeaderWinners') }}</th>
+              <th>{{ t('pragmatic.prizes.tableHeaderReward') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>1</td>
-              <td>x100,000 multiplier</td>
+              <td>x100,000</td>
             </tr>
             <tr>
               <td>3</td>
-              <td>x10,000 multiplier</td>
+              <td>x10,000</td>
             </tr>
             <tr>
               <td>6</td>
-              <td>x5,000 multiplier</td>
+              <td>x5,000</td>
             </tr>
             <tr>
               <td>10</td>
-              <td>x1,000 multiplier</td>
+              <td>x1,000</td>
             </tr>
             <tr>
               <td>30</td>
-              <td>x500 multiplier</td>
+              <td>x500</td>
             </tr>
             <tr>
               <td>50</td>
-              <td>x100 multiplier</td>
+              <td>x100</td>
             </tr>
             <tr>
               <td>300</td>
-              <td>x50 multiplier</td>
+              <td>x50</td>
             </tr>
             <tr>
               <td>7,500</td>
-              <td>x10 multiplier</td>
+              <td>x10</td>
             </tr>
             <tr>
               <td>69,000</td>
-              <td>x5 multiplier</td>
+              <td>x5</td>
             </tr>
             <tr>
               <td>5,000</td>
@@ -154,69 +208,58 @@ import pragmaticBanner from "~/assets/images/main/Pragmatic-Play-Drops-and-Wins-
       </div>
 
       <p class="pragmatic__text">
-        Prizes are awarded randomly and credited automatically to player accounts.
+        {{ t('pragmatic.prizes.p1') }}
       </p>
 
       <h3 class="pragmatic__subTitle">
-        Daily Slots Tournaments
+        {{ t('pragmatic.prizes.dailyTitle') }}
       </h3>
       <p class="pragmatic__text">
-        Players can also compete in Daily Tournaments by spinning Pragmatic Play slots at the MostBet casino.
+        {{ t('pragmatic.prizes.dailyP1') }}
       </p>
       <p class="pragmatic__text">
-        To qualify, players must bet €0.15 or more on selected slots. Only the first 5,000 qualifying bets per day
-        count toward the tournament.
+        {{ t('pragmatic.prizes.dailyP2') }}
       </p>
       <p class="pragmatic__text">
-        The top rewards from the €20,000 daily prize pool include:
+        {{ t('pragmatic.prizes.dailyP3') }}
       </p>
       <ul class="pragmatic__list">
-        <li>1st place – €3,000</li>
-        <li>2nd place – €2,000</li>
-        <li>3rd–4th – €1,000</li>
-        <li>5th–10th – €500</li>
-        <li>11th–20th – €200</li>
-        <li>21st–40th – €100</li>
+        <li
+          v-for="key in dailyRewardKeys"
+          :key="key"
+        >
+          {{ t(key) }}
+        </li>
       </ul>
 
       <h2 class="pragmatic__sectionTitle">
-        Play the Best Online Slots at MostBet
+        {{ t('pragmatic.slots.title') }}
       </h2>
       <p class="pragmatic__text">
-        The Drops &amp; Wins event includes dozens of popular Pragmatic Play slots available at MostBet casino.
-        Players can spin some of the best online slots, including:
+        {{ t('pragmatic.slots.p1') }}
       </p>
       <ul class="pragmatic__list">
-        <li>Sweet Bonanza</li>
-        <li>Gates of Olympus</li>
-        <li>Sugar Rush</li>
-        <li>The Dog House Megaways</li>
-        <li>Starlight Princess</li>
-        <li>Big Bass Bonanza</li>
-        <li>Wild West Gold</li>
-        <li>Fruit Party</li>
-        <li>5 Lions Megaways</li>
-        <li>Wolf Gold</li>
+        <li
+          v-for="key in slotKeys"
+          :key="key"
+        >
+          {{ t(key) }}
+        </li>
       </ul>
 
       <h2 class="pragmatic__sectionTitle">
-        Terms and Conditions
+        {{ t('pragmatic.terms.title') }}
       </h2>
       <p class="pragmatic__text">
-        Check out the key terms and conditions for the MostBet Pragmatic Play Drops &amp; Wins promotion.
-        Visit the official site for a full list of qualifying criteria and rules.
+        {{ t('pragmatic.terms.p1') }}
       </p>
       <ul class="pragmatic__list">
-        <li>The promotion runs from March 4, 2026, 19:01 CEST to April 1, 2026, 18:59 CEST.</li>
-        <li>Only registered and logged-in players at MostBet casino can participate.</li>
-        <li>The event includes Daily Tournaments and Weekly Wheel Drops.</li>
-        <li>Weekly Wheel Drops prizes total €350,000 per week.</li>
-        <li>The Daily Tournament prize pool is €20,000, divided among the top 500 players.</li>
-        <li>Only spins of €0.15 or more qualify for the Daily Tournament.</li>
-        <li>Only the first 5,000 qualifying bets per day count toward tournament rankings.</li>
-        <li>Players may win multiple prizes during the promotion.</li>
-        <li>All decisions regarding prize allocation are final once published.</li>
-        <li>The organiser may disqualify participants in cases of fraud or rule violations.</li>
+        <li
+          v-for="key in termKeys"
+          :key="key"
+        >
+          {{ t(key) }}
+        </li>
       </ul>
     </section>
   </main>
