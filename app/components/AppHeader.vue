@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 
 type NavItem = { key: string; href: string }
 type LocaleCode = 'en' | 'ru' | 'de' | 'es' | 'fr'
-type LangItem = { code: LocaleCode; label: string }
+type LangItem = { code: LocaleCode; label: string; flag: string }
 
 const nav: NavItem[] = [
   { key: 'header.register', href: '#register' },
@@ -14,11 +14,11 @@ const nav: NavItem[] = [
 ]
 
 const languages: LangItem[] = [
-  { code: 'en', label: 'English' },
-  { code: 'ru', label: 'Русский' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'es', label: 'Español' },
-  { code: 'fr', label: 'Français' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
 ]
 
 const { locale, t, setLocale } = useI18n({ useScope: 'global' })
@@ -28,7 +28,7 @@ const toggle = () => (isOpen.value = !isOpen.value)
 const close = () => (isOpen.value = false)
 
 const isLangOpen = ref(false)
-const openLang = () => (isLangOpen.value = true)
+const toggleLang = () => (isLangOpen.value = !isLangOpen.value)
 const closeLang = () => (isLangOpen.value = false)
 const selectLang = async (code: LocaleCode) => {
   await setLocale(code)
@@ -70,10 +70,34 @@ const currentLangLabel = computed(() => {
       </nav>
 
       <div class="header__right">
-        <button class="header__lang" type="button" aria-label="Language" @click="openLang">
+        <button class="header__lang" type="button" aria-label="Language" @click="toggleLang">
           <span class="header__langText">{{ currentLangLabel }}</span>
         </button>
         <a class="header__signin" href="#sign-in">{{ t('header.signIn') }}</a>
+
+        <div v-if="isLangOpen" class="langDropdown">
+          <div class="langDropdown__header">
+            <span class="langDropdown__title">
+              {{ t('header.selectLanguage') }}
+            </span>
+            <button class="langDropdown__close" type="button" aria-label="Close" @click="closeLang">
+              ✕
+            </button>
+          </div>
+          <div class="langDropdown__list">
+            <button
+              v-for="item in languages"
+              :key="item.code"
+              type="button"
+              class="langDropdown__item"
+              :class="{ 'langDropdown__item--active': item.code === locale }"
+              @click="selectLang(item.code)"
+            >
+              <span class="langDropdown__flag">{{ item.flag }}</span>
+              <span class="langDropdown__label">{{ item.label }}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -92,29 +116,6 @@ const currentLangLabel = computed(() => {
           {{ t('header.signIn') }}
         </a>
       </nav>
-    </div>
-    <div v-if="isLangOpen" class="langModal">
-      <div class="langModal__panel" role="dialog" aria-modal="true">
-        <div class="langModal__header">
-          <span class="langModal__title">{{ t('header.selectLanguage') }}</span>
-          <button class="langModal__close" type="button" aria-label="Close" @click="closeLang">
-            ✕
-          </button>
-        </div>
-        <div class="langModal__grid">
-          <button
-            v-for="item in languages"
-            :key="item.code"
-            type="button"
-            class="langModal__item"
-            :class="{ 'langModal__item--active': item.code === locale }"
-            @click="selectLang(item.code)"
-          >
-            <span class="langModal__dot" />
-            <span class="langModal__label">{{ item.label }}</span>
-          </button>
-        </div>
-      </div>
     </div>
   </header>
 </template>
@@ -220,6 +221,7 @@ const currentLangLabel = computed(() => {
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
 }
 
 .header__lang {
@@ -291,108 +293,73 @@ const currentLangLabel = computed(() => {
   color: var(--text);
 }
 
-.langModal {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 80px 16px 24px;
-}
-
-.langModal__panel {
-  position: relative;
-  max-width: 820px;
-  width: 100%;
-  max-height: 520px;
+.langDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 260px;
+  padding: 10px 10px 8px;
+  border-radius: 14px;
   background: #fff;
-  border-radius: 20px;
-  padding: 18px 20px 20px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   color: #0b1a2e;
-  overflow: hidden;
+  z-index: 60;
 }
 
-.langModal__header {
+.langDropdown__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 10px;
+  gap: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid rgba(9, 22, 43, 0.08);
 }
 
-.langModal__title {
-  font-size: 16px;
+.langDropdown__title {
+  font-size: 13px;
   font-weight: 700;
 }
 
-.langModal__close {
+.langDropdown__close {
   border: none;
   background: transparent;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
   cursor: pointer;
 }
 
-.langModal__grid {
-  margin-top: 10px;
-  padding-right: 6px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px 16px;
-  max-height: 430px;
-  overflow: auto;
+.langDropdown__list {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.langModal__item {
+.langDropdown__item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
+  padding: 6px 8px;
+  border-radius: 10px;
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
   font-size: 13px;
+  width: 100%;
 }
 
-.langModal__item--active {
-  background: rgba(16, 116, 255, 0.08);
-  border-color: rgba(16, 116, 255, 0.5);
+.langDropdown__item--active {
+  background: rgba(16, 116, 255, 0.06);
+  border-color: rgba(16, 116, 255, 0.45);
 }
 
-.langModal__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #1074ff;
+.langDropdown__flag {
+  font-size: 16px;
 }
 
-.langModal__item--active .langModal__dot {
-  box-shadow: 0 0 0 4px rgba(16, 116, 255, 0.18);
-}
-
-.langModal__label {
+.langDropdown__label {
   white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-  .langModal {
-    align-items: flex-end;
-    padding: 0 0 12px;
-  }
-
-  .langModal__panel {
-    max-width: 100%;
-    border-radius: 16px 16px 0 0;
-  }
-
-  .langModal__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 
