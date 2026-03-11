@@ -5,25 +5,17 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   modules: ['@nuxtjs/i18n'],
   i18n: {
+    langDir: 'locales',
     locales: [
-      { code: 'en', name: 'English' },
-      { code: 'ru', name: 'Русский' },
-      { code: 'de', name: 'Deutsch' },
-      { code: 'es', name: 'Español' },
-      { code: 'fr', name: 'Français' },
+      { code: 'en', name: 'English', file: 'en.json' },
+      { code: 'ru', name: 'Русский', file: 'ru.json' },
+      { code: 'de', name: 'Deutsch', file: 'de.json' },
+      { code: 'es', name: 'Español', file: 'es.json' },
+      { code: 'fr', name: 'Français', file: 'fr.json' },
     ],
+    strategy: 'no_prefix',
     defaultLocale: 'en',
-    vueI18n: {
-      legacy: false,
-      locale: 'en',
-      messages: {
-        en: {},
-        ru: {},
-        de: {},
-        es: {},
-        fr: {},
-      },
-    },
+    vueI18n: './i18n.config.ts',
   },
   devServer: {
     host: '127.0.0.1',

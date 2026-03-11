@@ -1,0 +1,15 @@
+{
+  "header": {
+    "register": "Register",
+    "promoCode": "Promo Code",
+    "app": "App",
+    "review": "Review",
+    "payments": "Payments",
+    "signIn": "Sign in",
+    "selectLanguage": "Select your language"
+  },
+  "hero": {
+    "title": "Register at MostBet",
+    "subtitle": "Draft page. Hero and main content will be placed here later."
+  }
+}
