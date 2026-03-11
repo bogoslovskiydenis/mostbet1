@@ -442,6 +442,80 @@ const {t} = useI18n({useScope: 'global'})
       </a>
     </div>
   </section>
+
+  <section class="faq">
+    <h2 class="faq__title">
+      MostBet FAQs
+    </h2>
+    <div class="faq__item">
+      <h3 class="faq__question">
+        Can I access MostBet?
+      </h3>
+      <p class="faq__answer">
+        MostBet is global and is available in lots of countries all over the world. You can access the sportsbook and casino via this page.
+      </p>
+    </div>
+    <div class="faq__item">
+      <h3 class="faq__question">
+        What is the MostBet Promo Code?
+      </h3>
+      <p class="faq__answer">
+        Use the MostBet promo code HUGE when you register to get the best welcome bonus available. Up to $300 bonus can be claimed.
+      </p>
+    </div>
+    <div class="faq__item">
+      <h3 class="faq__question">
+        Is MostBet legit?
+      </h3>
+      <p class="faq__answer">
+        Yes. MostBet is a legitimate online betting site offering online sports betting, casino games and lots more. MostBet.com holds a Curacao gambling licence.
+      </p>
+    </div>
+    <div class="faq__item">
+      <h3 class="faq__question">
+        Can I download a MostBet app?
+      </h3>
+      <p class="faq__answer">
+        Yes. The MostBet app is available on Android and iOS devices. Register to get the download, which is free of charge.
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="footer__logo">
+          MOSTBET
+        </span>
+        <p class="footer__text">
+          Copyright © 2026 MostBet.
+        </p>
+      </div>
+      <nav class="footer__nav" aria-label="Footer navigation">
+        <a href="#register" class="footer__link">
+          {{ t('header.register') }}
+        </a>
+        <a href="#promo-code" class="footer__link">
+          {{ t('header.promoCode') }}
+        </a>
+        <a href="#app" class="footer__link">
+          {{ t('header.app') }}
+        </a>
+        <a href="#review" class="footer__link">
+          {{ t('header.review') }}
+        </a>
+        <a href="#payments" class="footer__link">
+          {{ t('header.payments') }}
+        </a>
+        <a href="#sign-in" class="footer__link footer__link--accent">
+          {{ t('header.signIn') }}
+        </a>
+      </nav>
+    </div>
+    <p class="footer__legal">
+      Registration on a website or via an app in any form or medium without express written permission is prohibited. Players must be 18 or over and located in jurisdictions where online gambling is legal. Please play responsibly. Bet with your head, not over it. If you have a gambling problem, and want help, call or visit Gamcare.
+    </p>
+  </footer>
 </template>
 
 <style scoped>
@@ -812,6 +886,98 @@ const {t} = useI18n({useScope: 'global'})
 @media (max-width: 599px) {
   .promo-card__image {
     height: 120px;
+  }
+}
+
+.faq {
+  margin-top: 56px;
+  max-width: 860px;
+}
+
+.faq__title {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.faq__item + .faq__item {
+  margin-top: 16px;
+}
+
+.faq__question {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.faq__answer {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.footer {
+  margin-top: 64px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: 32px 16px 40px;
+  background: #050b19;
+  color: #b8c1d1;
+  font-size: 12px;
+}
+
+.footer__top {
+  max-width: var(--container);
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer__logo {
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  font-size: 14px;
+  color: #fff;
+}
+
+.footer__text {
+  margin: 0;
+}
+
+.footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  font-size: 13px;
+}
+
+.footer__link {
+  color: #b8c1d1;
+}
+
+.footer__link--accent {
+  font-weight: 700;
+  color: #fff;
+}
+
+.footer__legal {
+  max-width: var(--container);
+  margin: 0 auto;
+  line-height: 1.4;
+}
+
+@media (max-width: 599px) {
+  .footer__top {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
