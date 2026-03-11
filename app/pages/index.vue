@@ -6,7 +6,72 @@ import bannerReg from "../assets/images/main/registration.webp"
 import bannerPromo from "../assets/images/main/promocode.webp"
 import bannerLogin from "../assets/images/main/login.webp"
 
-
+const promos = [
+  {
+    id: 'pragmatic-prize-pool',
+    badge: 'PRAGMATIC PRIZE POOL',
+    title: 'Drops & Wins',
+    text: 'MostBet Pragmatic Play Drops & Wins – €25 million prize pool.',
+    cta: 'Play',
+    href: '/en/casino/mostbet-pragmatic-play'
+  },
+  {
+    id: 'big-slots-prize',
+    badge: 'BIG SLOTS PRIZE',
+    title: 'MostBet Progressive Jackpot',
+    text: 'Win €150,000 on Playson slots.',
+    cta: 'Play',
+    href: '#'
+  },
+  {
+    id: 'free-spins-competition',
+    badge: 'FREE SPINS COMPETITION',
+    title: 'MostBet Fire Horse Race',
+    text: 'Win online casino free spins.',
+    cta: 'Play',
+    href: '#'
+  },
+  {
+    id: 'sports-bonus',
+    badge: '$100 BONUS',
+    title: 'T20 World Cup at MostBet',
+    text: 'Get a 100% sports deposit bonus.',
+    cta: 'Play',
+    href: '#'
+  },
+  {
+    id: 'bet-refund',
+    badge: '100% BET REFUND',
+    title: 'MostBet Olympics Bonus',
+    text: 'Sports betting refund up to $100.',
+    cta: 'Place a bet',
+    href: '#'
+  },
+  {
+    id: 'weekly-bonuses',
+    badge: 'WEEKLY BONUSES',
+    title: 'MostBet Lucky Wednesday',
+    text: 'Get a deposit bonus and free spins.',
+    cta: 'Play',
+    href: '#'
+  },
+  {
+    id: 'win-free-bets',
+    badge: 'WIN FREE BETS',
+    title: 'MostBet Football Tournament',
+    text: 'Play the tournament and win free bets.',
+    cta: 'Play',
+    href: '#'
+  },
+  {
+    id: 'weekly-casino-reward',
+    badge: 'WEEKLY CASINO REWARD',
+    title: 'MostBet Sunday Super Bonus',
+    text: 'Get an 80% bonus and free spins.',
+    cta: 'Read more',
+    href: '#'
+  }
+]
 
 const { t } = useI18n({ useScope: 'global' })
 </script>
@@ -322,6 +387,40 @@ const { t } = useI18n({ useScope: 'global' })
       <li>QIWI</li>
     </ul>
   </section>
+
+  <section class="promo-grid">
+    <h2 class="promo-grid__title">
+      All you need to know about Mostbet
+    </h2>
+    <div class="promo-grid__list">
+      <a
+        v-for="promo in promos"
+        :key="promo.id"
+        class="promo-card"
+        :href="promo.href"
+        target="_blank"
+        rel="noopener"
+      >
+        <div class="promo-card__image">
+          <!-- image placeholder, will be replaced later -->
+        </div>
+        <div class="promo-card__body">
+          <div class="promo-card__badge">
+            {{ promo.badge }}
+          </div>
+          <h3 class="promo-card__title">
+            {{ promo.title }}
+          </h3>
+          <p class="promo-card__text">
+            {{ promo.text }}
+          </p>
+          <span class="promo-card__cta">
+            {{ promo.cta }}
+          </span>
+        </div>
+      </a>
+    </div>
+  </section>
 </template>
 
 <style scoped>
@@ -608,6 +707,82 @@ const { t } = useI18n({ useScope: 'global' })
 
 .official-info__list li + li {
   margin-top: 4px;
+}
+
+.promo-grid {
+  margin-top: 56px;
+}
+
+.promo-grid__title {
+  margin: 0 0 20px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.promo-grid__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.promo-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  text-decoration: none;
+  color: inherit;
+}
+
+.promo-card__image {
+  height: 140px;
+  background: #f0f4ff;
+}
+
+.promo-card__body {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.promo-card__badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ff6a00;
+}
+
+.promo-card__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.promo-card__text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.promo-card__cta {
+  margin-top: 8px;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #ff6a00;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 599px) {
+  .promo-card__image {
+    height: 120px;
+  }
 }
 
 @media (max-width: 899px) {
