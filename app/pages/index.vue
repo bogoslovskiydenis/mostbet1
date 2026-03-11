@@ -3,73 +3,73 @@ import {useI18n} from '#imports'
 import {Icon} from '@iconify/vue'
 import banner from "../assets/images/main/banner_img.webp"
 import bannerReg from "../assets/images/main/registration.webp"
-import bannerPromo from "../assets/images/main/promocode.webp"
+import bannerPromo from "../assets/images/main/promocode.png"
 import bannerLogin from "../assets/images/main/login.webp"
 import pragmaticBanner from "../assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg"
 
 const promos = [
   {
     id: 'pragmatic-prize-pool',
-    badge: 'PRAGMATIC PRIZE POOL',
-    title: 'Drops & Wins',
-    text: 'MostBet Pragmatic Play Drops & Wins – €25 million prize pool.',
-    cta: 'Play',
+    badgeKey: 'home.promos.pragmatic.badge',
+    titleKey: 'home.promos.pragmatic.title',
+    textKey: 'home.promos.pragmatic.text',
+    ctaKey: 'home.promos.pragmatic.cta',
     href: '/en/casino/mostbet-pragmatic-play'
   },
   {
     id: 'big-slots-prize',
-    badge: 'BIG SLOTS PRIZE',
-    title: 'MostBet Progressive Jackpot',
-    text: 'Win €150,000 on Playson slots.',
-    cta: 'Play',
+    badgeKey: 'home.promos.bigSlots.badge',
+    titleKey: 'home.promos.bigSlots.title',
+    textKey: 'home.promos.bigSlots.text',
+    ctaKey: 'home.promos.bigSlots.cta',
     href: '#'
   },
   {
     id: 'free-spins-competition',
-    badge: 'FREE SPINS COMPETITION',
-    title: 'MostBet Fire Horse Race',
-    text: 'Win online casino free spins.',
-    cta: 'Play',
+    badgeKey: 'home.promos.freeSpins.badge',
+    titleKey: 'home.promos.freeSpins.title',
+    textKey: 'home.promos.freeSpins.text',
+    ctaKey: 'home.promos.freeSpins.cta',
     href: '#'
   },
   {
     id: 'sports-bonus',
-    badge: '$100 BONUS',
-    title: 'T20 World Cup at MostBet',
-    text: 'Get a 100% sports deposit bonus.',
-    cta: 'Play',
+    badgeKey: 'home.promos.sportsBonus.badge',
+    titleKey: 'home.promos.sportsBonus.title',
+    textKey: 'home.promos.sportsBonus.text',
+    ctaKey: 'home.promos.sportsBonus.cta',
     href: '#'
   },
   {
     id: 'bet-refund',
-    badge: '100% BET REFUND',
-    title: 'MostBet Olympics Bonus',
-    text: 'Sports betting refund up to $100.',
-    cta: 'Place a bet',
+    badgeKey: 'home.promos.betRefund.badge',
+    titleKey: 'home.promos.betRefund.title',
+    textKey: 'home.promos.betRefund.text',
+    ctaKey: 'home.promos.betRefund.cta',
     href: '#'
   },
   {
     id: 'weekly-bonuses',
-    badge: 'WEEKLY BONUSES',
-    title: 'MostBet Lucky Wednesday',
-    text: 'Get a deposit bonus and free spins.',
-    cta: 'Play',
+    badgeKey: 'home.promos.weeklyBonuses.badge',
+    titleKey: 'home.promos.weeklyBonuses.title',
+    textKey: 'home.promos.weeklyBonuses.text',
+    ctaKey: 'home.promos.weeklyBonuses.cta',
     href: '#'
   },
   {
     id: 'win-free-bets',
-    badge: 'WIN FREE BETS',
-    title: 'MostBet Football Tournament',
-    text: 'Play the tournament and win free bets.',
-    cta: 'Play',
+    badgeKey: 'home.promos.winFreeBets.badge',
+    titleKey: 'home.promos.winFreeBets.title',
+    textKey: 'home.promos.winFreeBets.text',
+    ctaKey: 'home.promos.winFreeBets.cta',
     href: '#'
   },
   {
     id: 'weekly-casino-reward',
-    badge: 'WEEKLY CASINO REWARD',
-    title: 'MostBet Sunday Super Bonus',
-    text: 'Get an 80% bonus and free spins.',
-    cta: 'Read more',
+    badgeKey: 'home.promos.weeklyCasino.badge',
+    titleKey: 'home.promos.weeklyCasino.title',
+    textKey: 'home.promos.weeklyCasino.text',
+    ctaKey: 'home.promos.weeklyCasino.cta',
     href: '#'
   }
 ]
@@ -136,16 +136,15 @@ const {t} = useI18n({useScope: 'global'})
         >
       </div>
       <div class="info-card__content">
-        <h2 class="info-card__title">MostBet Registration</h2>
+        <h2 class="info-card__title">{{ t('home.info.registration.title') }}</h2>
         <p class="info-card__text">
-          Access the MostBet register screen to quickly open a new account and claim a welcome bonus.
+          {{ t('home.info.registration.p1') }}
         </p>
         <p class="info-card__text">
-          As soon as you register you can start betting at the sportsbook, where live betting on over 30 different
-          sports is available, as well as free live streaming for active members.
+          {{ t('home.info.registration.p2') }}
         </p>
         <p class="info-card__text">
-          Play at the MostBet Casino where you will find thousands of games to choose from.
+          {{ t('home.info.registration.p3') }}
         </p>
         <a href="#register" class="info-card__button info-card__button--primary">
           Register
@@ -163,16 +162,15 @@ const {t} = useI18n({useScope: 'global'})
         >
       </div>
       <div class="info-card__content">
-        <h2 class="info-card__title">MostBet Promo Code</h2>
+        <h2 class="info-card__title">{{ t('home.info.promo.title') }}</h2>
         <p class="info-card__text">
-          Use the MostBet promo code HUGE when registering to get the biggest available welcome bonus.
+          {{ t('home.info.promo.p1') }}
         </p>
         <p class="info-card__text">
-          A 150% deposit bonus can be claimed if you are registering with MostBet for the first time, with bonus offers
-          available at the sportsbook and casino.
+          {{ t('home.info.promo.p2') }}
         </p>
         <p class="info-card__text">
-          Use the promo code HUGE when completing the registration form to get your bonus.
+          {{ t('home.info.promo.p3') }}
         </p>
         <a href="#promo-code" class="info-card__button info-card__button--primary">
           Promo Code
@@ -190,16 +188,15 @@ const {t} = useI18n({useScope: 'global'})
         >
       </div>
       <div class="info-card__content">
-        <h2 class="info-card__title">MostBet Login</h2>
+        <h2 class="info-card__title">{{ t('home.info.login.title') }}</h2>
         <p class="info-card__text">
-          MostBet is available all over the world. Thousands of players are active at the sportsbook and casino every
-          day.
+          {{ t('home.info.login.p1') }}
         </p>
         <p class="info-card__text">
-          You can access MostBet login on your computer or mobile device, or download the official mobile app.
+          {{ t('home.info.login.p2') }}
         </p>
         <p class="info-card__text">
-          Log in for instant access to the casino and sportsbook.
+          {{ t('home.info.login.p3') }}
         </p>
         <a href="#sign-in" class="info-card__button info-card__button--primary">
           Log In
@@ -210,65 +207,65 @@ const {t} = useI18n({useScope: 'global'})
 
   <section class="info-table">
     <h2 class="info-table__title">
-      Register at MostBet – Use HUGE for a 150% Bonus + Free Spins
+      {{ t('home.infoTable.title') }}
     </h2>
     <h3 class="info-table__subtitle">
-      MostBet Information
+      {{ t('home.infoTable.subtitle') }}
     </h3>
     <div class="info-table__wrapper">
       <table class="info-table__table">
         <tbody>
         <tr>
-          <th>Website</th>
-          <td><a href="#" class="info-table__link">MostBet.com</a></td>
+          <th>{{ t('home.infoTable.website') }}</th>
+          <td><a href="#" class="info-table__link">{{ t('home.infoTable.websiteValue') }}</a></td>
         </tr>
         <tr>
-          <th>Products</th>
-          <td>Sports Betting, Casino, Live Casino, Aviator, Poker, Games</td>
+          <th>{{ t('home.infoTable.products') }}</th>
+          <td>{{ t('home.infoTable.productsValue') }}</td>
         </tr>
         <tr>
-          <th>Promo Code</th>
-          <td><strong>HUGE</strong></td>
+          <th>{{ t('home.infoTable.promoCode') }}</th>
+          <td><strong>{{ t('home.infoTable.promoCodeValue') }}</strong></td>
         </tr>
         <tr>
-          <th>Deposit Bonus</th>
-          <td>150% (must deposit within 15 minutes of registration otherwise 125%)</td>
+          <th>{{ t('home.infoTable.depositBonus') }}</th>
+          <td>{{ t('home.infoTable.depositBonusValue') }}</td>
         </tr>
         <tr>
-          <th>Bonus Value</th>
-          <td>Up to $300 plus up to 250 free spins</td>
+          <th>{{ t('home.infoTable.bonusValue') }}</th>
+          <td>{{ t('home.infoTable.bonusValueValue') }}</td>
         </tr>
         <tr>
-          <th>Established</th>
-          <td>2009</td>
+          <th>{{ t('home.infoTable.established') }}</th>
+          <td>{{ t('home.infoTable.establishedValue') }}</td>
         </tr>
         <tr>
-          <th>Accepted Crypto</th>
-          <td>Bitcoin, Dogecoin, Ethereum, Litecoin and others</td>
+          <th>{{ t('home.infoTable.acceptedCrypto') }}</th>
+          <td>{{ t('home.infoTable.acceptedCryptoValue') }}</td>
         </tr>
         <tr>
-          <th>Currencies</th>
-          <td>US Dollar, Canadian Dollar, Euros and many others</td>
+          <th>{{ t('home.infoTable.currencies') }}</th>
+          <td>{{ t('home.infoTable.currenciesValue') }}</td>
         </tr>
         <tr>
-          <th>Website Languages</th>
-          <td>Over 25 including English, Spanish, Portuguese, Russian, Ukrainian, French, German and Italian</td>
+          <th>{{ t('home.infoTable.websiteLanguages') }}</th>
+          <td>{{ t('home.infoTable.websiteLanguagesValue') }}</td>
         </tr>
         <tr>
-          <th>Mobile App</th>
-          <td>Yes – Downloads on Android and iOS available</td>
+          <th>{{ t('home.infoTable.mobileApp') }}</th>
+          <td>{{ t('home.infoTable.mobileAppValue') }}</td>
         </tr>
         <tr>
-          <th>Live Support</th>
-          <td>Yes</td>
+          <th>{{ t('home.infoTable.liveSupport') }}</th>
+          <td>{{ t('home.infoTable.liveSupportValue') }}</td>
         </tr>
         <tr>
-          <th>Live Streaming</th>
-          <td>Yes</td>
+          <th>{{ t('home.infoTable.liveStreaming') }}</th>
+          <td>{{ t('home.infoTable.liveStreamingValue') }}</td>
         </tr>
         <tr>
-          <th>Minimum Deposit</th>
-          <td>$1 or currency equivalent ($15 to claim welcome bonus)</td>
+          <th>{{ t('home.infoTable.minimumDeposit') }}</th>
+          <td>{{ t('home.infoTable.minimumDepositValue') }}</td>
         </tr>
         </tbody>
       </table>
@@ -277,145 +274,130 @@ const {t} = useI18n({useScope: 'global'})
 
   <section class="promo-info">
     <h2 class="promo-info__title">
-      MostBet Promo Code Information
+      {{ t('home.promoInfo.title') }}
     </h2>
     <p class="promo-info__text">
-      New players can use the MostBet promo code HUGE when registering.
+      {{ t('home.promoInfo.p1') }}
     </p>
     <p class="promo-info__text">
-      The code allows new players to get a 150% deposit bonus when making a deposit. Up to $300 in bonus money can be
-      claimed by using this code when completing the registration form.
+      {{ t('home.promoInfo.p2') }}
     </p>
 
     <h3 class="promo-info__subtitle">
-      MostBet Code Summary
+      {{ t('home.promoInfo.summaryTitle') }}
     </h3>
     <div class="promo-info__tableWrapper">
       <table class="promo-info__table">
         <thead>
         <tr>
-          <th>Product</th>
-          <th>Promo Code</th>
-          <th>Bonus Offer</th>
+          <th>{{ t('home.promoInfo.tableProduct') }}</th>
+          <th>{{ t('home.promoInfo.tablePromo') }}</th>
+          <th>{{ t('home.promoInfo.tableOffer') }}</th>
         </tr>
         </thead>
         <tbody>
         <tr>
           <td>MostBet Sports</td>
           <td><strong>HUGE</strong></td>
-          <td>$300</td>
+          <td>{{ t('home.promoInfo.sportsRowOffer') }}</td>
         </tr>
         <tr>
           <td>MostBet Casino</td>
           <td><strong>HUGE</strong></td>
-          <td>$300 plus 250 free spins</td>
+          <td>{{ t('home.promoInfo.casinoRowOffer') }}</td>
         </tr>
         </tbody>
       </table>
     </div>
 
     <p class="promo-info__text">
-      By using the promo code HUGE when registering a new account you will get the biggest available welcome bonus.
+      {{ t('home.promoInfo.p3') }}
     </p>
     <p class="promo-info__text">
-      Up to $300 or currency equivalent is available as a bonus. You can also claim free spins.
+      {{ t('home.promoInfo.p4') }}
     </p>
     <p class="promo-info__text">
-      Register and you can claim one of the biggest new customer bonus offers available at any online betting site.
+      {{ t('home.promoInfo.p5') }}
     </p>
     <p class="promo-info__text">
-      Claiming the MostBet bonus is quick and easy.
+      {{ t('home.promoInfo.p6') }}
     </p>
     <p class="promo-info__text">
-      Use the links on this page to visit the official MostBet website and click the ‘Sign Up’ button. Fill in the short
-      registration form that appears on your screen.
-      This form takes less than a minute to complete. On the form you will be asked if you have a promo code. Type in
-      the HUGE code here.
+      {{ t('home.promoInfo.p7') }}
     </p>
     <p class="promo-info__text">
-      You can then get the bonus and start placing your bets!
+      {{ t('home.promoInfo.p8') }}
     </p>
 
     <p class="promo-info__text">
-      There are several ways to start betting, including:
+      {{ t('home.promoInfo.p9') }}
     </p>
     <ul class="promo-info__list">
-      <li><strong>Quick registration:</strong> Click the ‘Sign Up’ button to quickly open an account.</li>
-      <li><strong>Register via mobile phone:</strong> Enter your mobile number when registering.</li>
-      <li><strong>Register via email:</strong> Provide an email address when registering.</li>
-      <li><strong>Register via social media:</strong> You can link your Google, Telegram, Twitter/X or Facebook account
-        to your MostBet account.
-      </li>
+      <li>{{ t('home.promoInfo.listQuick') }}</li>
+      <li>{{ t('home.promoInfo.listPhone') }}</li>
+      <li>{{ t('home.promoInfo.listEmail') }}</li>
+      <li>{{ t('home.promoInfo.listSocial') }}</li>
     </ul>
   </section>
 
   <section class="official-info">
     <h2 class="official-info__title">
-      MostBet Official Website
+      {{ t('home.official.title') }}
     </h2>
     <p class="official-info__text">
-      MostBet is available worldwide, offering online sports betting, live streaming, casino games and lots more to
-      players in many different countries.
+      {{ t('home.official.p1') }}
     </p>
     <p class="official-info__text">
-      MostBet is licensed and accepts players from Canada and Latin America, as well as Africa, Asia, many European
-      countries and elsewhere.
+      {{ t('home.official.p2') }}
     </p>
     <p class="official-info__text">
-      As soon as you complete the MostBet registration process, you will be able to bet on over 30 different sports. As
-      an active player, you can also enjoy free live streaming sport on many sports.
+      {{ t('home.official.p3') }}
     </p>
     <p class="official-info__text">
-      The MostBet casino is home to thousands of different games.
+      {{ t('home.official.p4') }}
     </p>
     <p class="official-info__text">
-      As MostBet is a crypto-friendly betting site, you can deposit and bet using Bitcoin and other crypto coins, in
-      addition to numerous other payment methods.
+      {{ t('home.official.p5') }}
     </p>
     <p class="official-info__text">
-      The sportsbook and casino are both available on PC and mobile and in multiple languages, while a dedicated mobile
-      app is also available to players.
+      {{ t('home.official.p6') }}
     </p>
     <p class="official-info__text">
-      The MostBet promo code is HUGE. New players should use this code when opening an account to claim the biggest
-      bonus offer. Up to $300 bonus is available!
+      {{ t('home.official.p7') }}
     </p>
 
     <h3 class="official-info__subtitle">
-      MostBet Payment Methods
+      {{ t('home.official.paymentsTitle') }}
     </h3>
     <p class="official-info__text">
-      You can fund your account in lots of different ways. You can deposit with crypto, credit cards, debit cards and
-      many other payment methods.
+      {{ t('home.official.paymentsP1') }}
     </p>
     <p class="official-info__text">
-      Popular deposit options with MostBet players are:
+      {{ t('home.official.paymentsP2') }}
     </p>
     <ul class="official-info__list">
-      <li>Mastercard</li>
-      <li>Visa</li>
-      <li>Bitcoin</li>
-      <li>Ethereum</li>
-      <li>Litecoin</li>
-      <li>ecoPayz</li>
-      <li>Google Pay</li>
-      <li>WebMoney</li>
-      <li>QIWI</li>
+      <li>{{ t('home.official.paymentsList.mastercard') }}</li>
+      <li>{{ t('home.official.paymentsList.visa') }}</li>
+      <li>{{ t('home.official.paymentsList.bitcoin') }}</li>
+      <li>{{ t('home.official.paymentsList.ethereum') }}</li>
+      <li>{{ t('home.official.paymentsList.litecoin') }}</li>
+      <li>{{ t('home.official.paymentsList.ecopayz') }}</li>
+      <li>{{ t('home.official.paymentsList.googlePay') }}</li>
+      <li>{{ t('home.official.paymentsList.webmoney') }}</li>
+      <li>{{ t('home.official.paymentsList.qiwi') }}</li>
     </ul>
   </section>
 
   <section class="promo-grid">
     <h2 class="promo-grid__title">
-      All you need to know about Mostbet
+      {{ t('home.promos.allTitle') }}
     </h2>
     <div class="promo-grid__list">
       <a
-          v-for="promo in promos"
-          :key="promo.id"
-          class="promo-card"
-          :href="promo.href"
-          target="_blank"
-          rel="noopener"
+        v-for="promo in promos"
+        :key="promo.id"
+        class="promo-card"
+        :href="promo.href"
       >
         <div class="promo-card__image">
           <img
@@ -427,16 +409,16 @@ const {t} = useI18n({useScope: 'global'})
         </div>
         <div class="promo-card__body">
           <div class="promo-card__badge">
-            {{ promo.badge }}
+            {{ t(promo.badgeKey) }}
           </div>
           <h3 class="promo-card__title">
-            {{ promo.title }}
+            {{ t(promo.titleKey) }}
           </h3>
           <p class="promo-card__text">
-            {{ promo.text }}
+            {{ t(promo.textKey) }}
           </p>
           <span class="promo-card__cta">
-            {{ promo.cta }}
+            {{ t(promo.ctaKey) }}
           </span>
         </div>
       </a>
@@ -445,77 +427,41 @@ const {t} = useI18n({useScope: 'global'})
 
   <section class="faq">
     <h2 class="faq__title">
-      MostBet FAQs
+      {{ t('home.faq.title') }}
     </h2>
     <div class="faq__item">
       <h3 class="faq__question">
-        Can I access MostBet?
+        {{ t('home.faq.q1.question') }}
       </h3>
       <p class="faq__answer">
-        MostBet is global and is available in lots of countries all over the world. You can access the sportsbook and casino via this page.
+        {{ t('home.faq.q1.answer') }}
       </p>
     </div>
     <div class="faq__item">
       <h3 class="faq__question">
-        What is the MostBet Promo Code?
+        {{ t('home.faq.q2.question') }}
       </h3>
       <p class="faq__answer">
-        Use the MostBet promo code HUGE when you register to get the best welcome bonus available. Up to $300 bonus can be claimed.
+        {{ t('home.faq.q2.answer') }}
       </p>
     </div>
     <div class="faq__item">
       <h3 class="faq__question">
-        Is MostBet legit?
+        {{ t('home.faq.q3.question') }}
       </h3>
       <p class="faq__answer">
-        Yes. MostBet is a legitimate online betting site offering online sports betting, casino games and lots more. MostBet.com holds a Curacao gambling licence.
+        {{ t('home.faq.q3.answer') }}
       </p>
     </div>
     <div class="faq__item">
       <h3 class="faq__question">
-        Can I download a MostBet app?
+        {{ t('home.faq.q4.question') }}
       </h3>
       <p class="faq__answer">
-        Yes. The MostBet app is available on Android and iOS devices. Register to get the download, which is free of charge.
+        {{ t('home.faq.q4.answer') }}
       </p>
     </div>
   </section>
-
-  <footer class="footer">
-    <div class="footer__top">
-      <div class="footer__brand">
-        <span class="footer__logo">
-          MOSTBET
-        </span>
-        <p class="footer__text">
-          Copyright © 2026 MostBet.
-        </p>
-      </div>
-      <nav class="footer__nav" aria-label="Footer navigation">
-        <a href="#register" class="footer__link">
-          {{ t('header.register') }}
-        </a>
-        <a href="#promo-code" class="footer__link">
-          {{ t('header.promoCode') }}
-        </a>
-        <a href="#app" class="footer__link">
-          {{ t('header.app') }}
-        </a>
-        <a href="#review" class="footer__link">
-          {{ t('header.review') }}
-        </a>
-        <a href="#payments" class="footer__link">
-          {{ t('header.payments') }}
-        </a>
-        <a href="#sign-in" class="footer__link footer__link--accent">
-          {{ t('header.signIn') }}
-        </a>
-      </nav>
-    </div>
-    <p class="footer__legal">
-      Registration on a website or via an app in any form or medium without express written permission is prohibited. Players must be 18 or over and located in jurisdictions where online gambling is legal. Please play responsibly. Bet with your head, not over it. If you have a gambling problem, and want help, call or visit Gamcare.
-    </p>
-  </footer>
 </template>
 
 <style scoped>
@@ -626,7 +572,6 @@ const {t} = useI18n({useScope: 'global'})
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr);
   gap: 24px;
-  align-items: center;
 }
 
 .info-card__imageWrapper {
@@ -914,71 +859,6 @@ const {t} = useI18n({useScope: 'global'})
   margin: 0;
   font-size: 14px;
   color: var(--muted);
-}
-
-.footer {
-  margin-top: 64px;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  padding: 32px 16px 40px;
-  background: #050b19;
-  color: #b8c1d1;
-  font-size: 12px;
-}
-
-.footer__top {
-  max-width: var(--container);
-  margin: 0 auto 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.footer__brand {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.footer__logo {
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  font-size: 14px;
-  color: #fff;
-}
-
-.footer__text {
-  margin: 0;
-}
-
-.footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 16px;
-  font-size: 13px;
-}
-
-.footer__link {
-  color: #b8c1d1;
-}
-
-.footer__link--accent {
-  font-weight: 700;
-  color: #fff;
-}
-
-.footer__legal {
-  max-width: var(--container);
-  margin: 0 auto;
-  line-height: 1.4;
-}
-
-@media (max-width: 599px) {
-  .footer__top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 
 @media (max-width: 899px) {
