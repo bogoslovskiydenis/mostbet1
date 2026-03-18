@@ -1,67 +1,87 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'admin',
-})
+definePageMeta({ layout: 'admin' })
 
-type PageItem = {
-  slug: string
+type LocaleEntry = { code: string; name: string }
+type LocaleContent = {
   title: string
-  content: string
-  bannerUrl?: string
   badge?: string
   description?: string
   ctaText?: string
+  content: string
+}
+type PageItem = {
+  slug: string
+  bannerUrl?: string
+  locales?: Record<string, LocaleContent>
 }
 
 const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages')
+const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
 const promoPages = computed(() =>
   (pages.value || []).filter(p => !p.slug.startsWith('_'))
 )
+const availableLocales = computed(() => localesData.value?.locales || [{ code: 'en', name: 'English' }])
 
-const form = reactive<PageItem>({
-  slug: '',
-  title: '',
-  content: '',
-  bannerUrl: '',
-  badge: '',
-  description: '',
-  ctaText: '',
-})
-
+const activeLocale = ref('en')
 const isEditing = ref(false)
 const initialSlug = ref<string | null>(null)
 const saving = ref(false)
 const errorMessage = ref('')
 const addBanner = ref(false)
 
+const form = reactive({
+  slug: '',
+  bannerUrl: '',
+  title: '',
+  badge: '',
+  description: '',
+  ctaText: '',
+  content: '',
+})
+
 function startCreate() {
   isEditing.value = false
   initialSlug.value = null
   form.slug = ''
-  form.title = ''
-  form.content = ''
   form.bannerUrl = ''
+  resetLocaleFields()
+  addBanner.value = false
+  errorMessage.value = ''
+}
+
+function resetLocaleFields() {
+  form.title = ''
   form.badge = ''
   form.description = ''
   form.ctaText = ''
-  addBanner.value = false
-  errorMessage.value = ''
+  form.content = ''
+}
+
+function loadLocaleFields(page: PageItem, locale: string) {
+  const lc = page.locales?.[locale]
+  form.title = lc?.title || ''
+  form.badge = lc?.badge || ''
+  form.description = lc?.description || ''
+  form.ctaText = lc?.ctaText || ''
+  form.content = lc?.content || ''
 }
 
 function startEdit(page: PageItem) {
   isEditing.value = true
   initialSlug.value = page.slug
   form.slug = page.slug
-  form.title = page.title
-  form.content = page.content
   form.bannerUrl = page.bannerUrl || ''
-  form.badge = page.badge || ''
-  form.description = page.description || ''
-  form.ctaText = page.ctaText || ''
   addBanner.value = !!page.bannerUrl
+  loadLocaleFields(page, activeLocale.value)
   errorMessage.value = ''
 }
+
+watch(activeLocale, () => {
+  if (!isEditing.value) return
+  const page = promoPages.value.find(p => p.slug === initialSlug.value)
+  if (page) loadLocaleFields(page, activeLocale.value)
+})
 
 async function submitForm() {
   try {
@@ -72,16 +92,21 @@ async function submitForm() {
       method,
       body: {
         slug: form.slug.trim(),
+        bannerUrl: addBanner.value ? form.bannerUrl.trim() : '',
+        locale: activeLocale.value,
         title: form.title.trim(),
+        badge: form.badge.trim(),
+        description: form.description.trim(),
+        ctaText: form.ctaText.trim(),
         content: form.content,
-        bannerUrl: addBanner.value ? form.bannerUrl?.trim() : '',
-        badge: form.badge?.trim(),
-        description: form.description?.trim(),
-        ctaText: form.ctaText?.trim(),
       },
     })
     await refresh()
     if (!isEditing.value) startCreate()
+    else {
+      const updated = promoPages.value.find(p => p.slug === initialSlug.value)
+      if (updated) loadLocaleFields(updated, activeLocale.value)
+    }
   } catch (error: any) {
     errorMessage.value = error?.data?.statusMessage || 'Ошибка сохранения'
   } finally {
@@ -97,6 +122,12 @@ async function remove(slug: string) {
     if (isEditing.value && initialSlug.value === slug) startCreate()
   } catch {}
 }
+
+function getPageTitle(page: PageItem) {
+  return page.locales?.['en']?.title
+    || page.locales?.[Object.keys(page.locales || {})[0]]?.title
+    || page.slug
+}
 </script>
 
 <template>
@@ -104,9 +135,7 @@ async function remove(slug: string) {
     <div class="ap__columns">
       <div class="ap__col ap__col--list">
         <div class="ap__listHead">
-          <h2 class="ap__listTitle">
-            All you need to know about Mostbet
-          </h2>
+          <h2 class="ap__listTitle">All you need to know about Mostbet</h2>
           <button type="button" class="ap__btn ap__btn--primary" @click="startCreate">
             Создать страницу
           </button>
@@ -118,14 +147,14 @@ async function remove(slug: string) {
           <thead>
             <tr>
               <th>Slug</th>
-              <th>Заголовок</th>
+              <th>Заголовок (EN)</th>
               <th />
             </tr>
           </thead>
           <tbody>
             <tr v-for="page in promoPages" :key="page.slug">
               <td><code>{{ page.slug }}</code></td>
-              <td>{{ page.title }}</td>
+              <td>{{ getPageTitle(page) }}</td>
               <td class="ap__tableActions">
                 <button type="button" class="ap__btn ap__btn--ghost" @click="startEdit(page)">
                   Редактировать
@@ -154,13 +183,9 @@ async function remove(slug: string) {
               type="text"
               class="ap__input"
               placeholder="пример: bonus-terms"
+              :disabled="isEditing"
               required
             >
-          </label>
-
-          <label class="ap__field">
-            <span class="ap__label">Заголовок</span>
-            <input v-model="form.title" type="text" class="ap__input" required>
           </label>
 
           <label class="ap__checkboxRow">
@@ -169,13 +194,34 @@ async function remove(slug: string) {
           </label>
 
           <label v-if="addBanner" class="ap__field">
-            <span class="ap__label">URL баннера</span>
+            <span class="ap__label">URL баннера (общий для всех языков)</span>
             <input
               v-model="form.bannerUrl"
               type="text"
               class="ap__input"
               placeholder="https://... или /img/banner.jpg"
             >
+          </label>
+
+          <div class="ap__localeRow">
+            <span class="ap__label">Язык контента</span>
+            <div class="ap__localeTabs">
+              <button
+                v-for="l in availableLocales"
+                :key="l.code"
+                type="button"
+                class="ap__localeTab"
+                :class="{ 'ap__localeTab--active': activeLocale === l.code }"
+                @click="activeLocale = l.code"
+              >
+                {{ l.code.toUpperCase() }}
+              </button>
+            </div>
+          </div>
+
+          <label class="ap__field">
+            <span class="ap__label">Заголовок</span>
+            <input v-model="form.title" type="text" class="ap__input" required>
           </label>
 
           <label class="ap__field">
@@ -195,18 +241,13 @@ async function remove(slug: string) {
 
           <label class="ap__field">
             <span class="ap__label">HTML контент</span>
-            <textarea
-              v-model="form.content"
-              class="ap__textarea"
-              rows="10"
-              placeholder="Текст страницы (поддерживается HTML)"
-            />
+            <textarea v-model="form.content" class="ap__textarea" rows="10" placeholder="Текст страницы (поддерживается HTML)" />
           </label>
 
           <p v-if="errorMessage" class="ap__error">{{ errorMessage }}</p>
 
           <button type="submit" class="ap__btn ap__btn--primary ap__btn--full" :disabled="saving">
-            {{ saving ? 'Сохранение...' : 'Сохранить' }}
+            {{ saving ? 'Сохранение...' : `Сохранить (${activeLocale.toUpperCase()})` }}
           </button>
         </form>
       </div>
@@ -291,6 +332,35 @@ async function remove(slug: string) {
   color: #666666;
 }
 
+.ap__localeRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ap__localeTabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ap__localeTab {
+  padding: 4px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+}
+
+.ap__localeTab--active {
+  background: #1f6feb;
+  color: #fff;
+  border-color: #1f6feb;
+}
+
 .ap__input,
 .ap__textarea {
   width: 100%;
@@ -311,6 +381,11 @@ async function remove(slug: string) {
   box-shadow: 0 0 0 1px rgba(31, 111, 235, 0.15);
 }
 
+.ap__input:disabled {
+  background: #f5f5f5;
+  color: #888;
+}
+
 .ap__btn {
   border: none;
   border-radius: 6px;
@@ -322,7 +397,7 @@ async function remove(slug: string) {
 }
 
 .ap__btn--primary { background: #1f6feb; color: #fff; }
-.ap__btn--ghost { background: #fff; color: black }
+.ap__btn--ghost { background: #fff; border: 1px solid #d0d0d0; }
 .ap__btn--danger { background: #dc2626; color: #fff; }
 .ap__btn--full { width: 100%; padding: 10px; font-size: 14px; }
 
@@ -339,8 +414,6 @@ async function remove(slug: string) {
 }
 
 @media (max-width: 899px) {
-  .ap__columns {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  .ap__columns { grid-template-columns: minmax(0, 1fr); }
 }
 </style>

@@ -2,22 +2,35 @@
 import { Icon } from '@iconify/vue'
 
 const route = useRoute()
+const { locale } = useAppLocale()
 
 const slug = computed(() => String(route.params.slug || ''))
 const isSystemSlug = computed(() => slug.value.startsWith('_'))
 
-type PageItem = {
-  slug: string
+type LocaleContent = {
   title: string
-  content: string
-  bannerUrl?: string
   badge?: string
   description?: string
   ctaText?: string
+  content: string
+}
+type PageItem = {
+  slug: string
+  bannerUrl?: string
+  locales?: Record<string, LocaleContent>
 }
 
-const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystemSlug.value ? null : '/api/admin/pages'), {
-  query: { slug },
+const { data: page, error, pending } = useFetch<PageItem | null>(
+  () => (isSystemSlug.value ? null : '/api/admin/pages'),
+  { query: { slug } },
+)
+
+const localePage = computed<LocaleContent | null>(() => {
+  if (!page.value?.locales) return null
+  return page.value.locales[locale.value]
+    || page.value.locales['en']
+    || Object.values(page.value.locales)[0]
+    || null
 })
 </script>
 
@@ -25,7 +38,7 @@ const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystem
   <main class="dpage">
     <div v-if="pending" class="dpage__state">Загрузка...</div>
 
-    <div v-else-if="isSystemSlug || error || !page" class="dpage__state">
+    <div v-else-if="isSystemSlug || error || !page || !localePage" class="dpage__state">
       Страница не найдена
     </div>
 
@@ -37,20 +50,20 @@ const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystem
             <span>Home</span>
           </NuxtLink>
           <span class="dpage__crumbSep">/</span>
-          <span class="dpage__crumb dpage__crumb--current">{{ page.title }}</span>
+          <span class="dpage__crumb dpage__crumb--current">{{ localePage.title }}</span>
         </nav>
 
-        <div v-if="page.badge" class="dpage__badge">{{ page.badge }}</div>
-        <h1 class="dpage__title">{{ page.title }}</h1>
+        <div v-if="localePage.badge" class="dpage__badge">{{ localePage.badge }}</div>
+        <h1 class="dpage__title">{{ localePage.title }}</h1>
       </header>
 
       <section v-if="page.bannerUrl" class="dpage__hero">
         <div class="dpage__heroImage">
-          <img :src="page.bannerUrl" :alt="page.title" loading="lazy">
+          <img :src="page.bannerUrl" :alt="localePage.title" loading="lazy">
         </div>
       </section>
 
-      <article class="dpage__body" v-html="page.content" />
+      <article class="dpage__body" v-html="localePage.content" />
     </template>
   </main>
 </template>
@@ -157,9 +170,7 @@ const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystem
   color: #fff;
 }
 
-.dpage__body :deep(p) {
-  margin: 0 0 12px;
-}
+.dpage__body :deep(p) { margin: 0 0 12px; }
 
 .dpage__body :deep(ul),
 .dpage__body :deep(ol) {
@@ -167,9 +178,7 @@ const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystem
   padding: 0;
 }
 
-.dpage__body :deep(li + li) {
-  margin-top: 4px;
-}
+.dpage__body :deep(li + li) { margin-top: 4px; }
 
 .dpage__body :deep(table) {
   width: 100%;
@@ -197,11 +206,7 @@ const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystem
 }
 
 @media (max-width: 599px) {
-  .dpage {
-    padding-top: 20px;
-  }
-  .dpage__title {
-    font-size: 22px;
-  }
+  .dpage { padding-top: 20px; }
+  .dpage__title { font-size: 22px; }
 }
 </style>

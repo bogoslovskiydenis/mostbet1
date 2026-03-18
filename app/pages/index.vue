@@ -5,20 +5,30 @@ import bannerReg from "../assets/images/main/registration.webp"
 import bannerPromo from "../assets/images/main/promocode.png"
 import bannerLogin from "../assets/images/main/login.webp"
 
-type DynamicPage = {
-  slug: string
+type LocaleContent = {
   title: string
-  content: string
-  bannerUrl?: string
   badge?: string
   description?: string
   ctaText?: string
+  content: string
 }
+type DynamicPage = {
+  slug: string
+  bannerUrl?: string
+  locales?: Record<string, LocaleContent>
+}
+
+const { locale } = useAppLocale()
 
 const { data: allPages } = useFetch<DynamicPage[]>('/api/admin/pages')
 const dynamicPages = computed(() =>
   (allPages.value || []).filter(p => !p.slug.startsWith('_'))
 )
+
+function getLocaleData(page: DynamicPage) {
+  if (!page.locales) return null
+  return page.locales[locale.value] || page.locales['en'] || Object.values(page.locales)[0] || null
+}
 
 const { th } = useLocaleMessages()
 </script>
@@ -347,18 +357,15 @@ const { th } = useLocaleMessages()
         :to="`/${page.slug}`"
       >
         <div class="promo-card__image">
-          <img
-            v-if="page.bannerUrl"
-            :src="page.bannerUrl"
-            :alt="page.title"
-            loading="lazy"
-          >
+          <img v-if="page.bannerUrl" :src="page.bannerUrl" :alt="getLocaleData(page)?.title || page.slug" loading="lazy">
         </div>
         <div class="promo-card__body">
-          <div v-if="page.badge" class="promo-card__badge">{{ page.badge }}</div>
-          <h3 class="promo-card__title">{{ page.title }}</h3>
-          <p v-if="page.description" class="promo-card__text">{{ page.description }}</p>
-          <span v-if="page.ctaText" class="promo-card__cta">{{ page.ctaText }}</span>
+          <template v-if="getLocaleData(page)">
+            <div v-if="getLocaleData(page)!.badge" class="promo-card__badge">{{ getLocaleData(page)!.badge }}</div>
+            <h3 class="promo-card__title">{{ getLocaleData(page)!.title }}</h3>
+            <p v-if="getLocaleData(page)!.description" class="promo-card__text">{{ getLocaleData(page)!.description }}</p>
+            <span v-if="getLocaleData(page)!.ctaText" class="promo-card__cta">{{ getLocaleData(page)!.ctaText }}</span>
+          </template>
         </div>
       </NuxtLink>
     </div>
