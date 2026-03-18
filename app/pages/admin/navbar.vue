@@ -32,7 +32,7 @@ const { data, refresh } = useFetch<PageItem | null>('/api/admin/pages', {
   query: { slug },
 })
 
-const { locales } = useI18n({ useScope: 'global' })
+const { data: locales } = useFetch<{ code: string; name: string }[]>('/api/locales')
 const activeLocale = ref<LocaleCode>('en')
 
 const form = reactive<Required<NavbarLocaleSettings>>({
@@ -69,7 +69,7 @@ function loadForm() {
 }
 
 watchEffect(() => {
-  const first = (locales.value?.[0] as any)?.code
+  const first = locales.value?.[0]?.code
   if (first && activeLocale.value === 'en') {
     activeLocale.value = first
   }
@@ -133,8 +133,8 @@ async function save() {
       <label class="admin-page__field">
         <span class="admin-page__label">Локаль</span>
         <select v-model="activeLocale" class="admin-page__input">
-          <option v-for="l in locales" :key="(l as any).code" :value="(l as any).code">
-            {{ (l as any).name || (l as any).code }}
+          <option v-for="l in (locales || [])" :key="l.code" :value="l.code">
+            {{ l.name || l.code }}
           </option>
         </select>
       </label>

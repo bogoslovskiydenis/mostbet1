@@ -27,7 +27,8 @@ const nav: NavItem[] = [
   { key: 'header.payments', href: '#payments' },
 ]
 
-const { locale, t, setLocale } = useI18n({ useScope: 'global' })
+const { locale, setLocale } = useAppLocale()
+const { th } = useLocaleMessages()
 
 const { data: serverLocales } = useFetch<{ code: string; name: string }[]>('/api/locales')
 
@@ -68,10 +69,10 @@ const navLinks = computed(() => {
   if (custom.length) {
     return custom
   }
-  return nav.map((x) => ({ label: t(x.key), href: x.href }))
+  return nav.map((x) => ({ label: th(x.key), href: x.href }))
 })
 
-const signInLabel = computed(() => currentNavbar.value.signInLabel || t('header.signIn'))
+const signInLabel = computed(() => currentNavbar.value.signInLabel || th('header.signIn'))
 const signInHref = computed(() => currentNavbar.value.signInHref || '#sign-in')
 
 const burgerLabel = computed(() => (isOpen.value ? 'Close menu' : 'Open menu'))
@@ -123,7 +124,7 @@ const currentLangLabel = computed(() => {
         <div v-if="isLangOpen" class="langDropdown">
           <div class="langDropdown__header">
             <span class="langDropdown__title">
-              {{ t('header.selectLanguage') }}
+              {{ th('header.selectLanguage') }}
             </span>
             <button class="langDropdown__close" type="button" aria-label="Close" @click="closeLang">
               ✕

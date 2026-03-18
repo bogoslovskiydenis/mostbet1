@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { useI18n } from '#imports'
 import pragmaticBanner from '~/assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg'
 
-const { t } = useI18n({ useScope: 'global' })
+const { th: t } = useLocaleMessages()
 
 const bulletKeys = [
   'pragmatic.bullets.0',

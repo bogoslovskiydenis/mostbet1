@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useI18n} from '#imports'
 import {Icon} from '@iconify/vue'
 import banner from "../assets/images/main/banner_img.webp"
 import bannerReg from "../assets/images/main/registration.webp"
@@ -75,13 +74,7 @@ const promos = [
 ]
 
 
-const { t, locale } = useI18n({ useScope: 'global' })
-
-const { data: serverLocaleMessages } = useFetch<Record<string, string>>(
-  () => `/api/locales/${locale.value}`,
-)
-
-const th = (key: string) => serverLocaleMessages.value?.[key] || t(key)
+const { th } = useLocaleMessages()
 </script>
 
 <template>
@@ -107,7 +100,7 @@ const th = (key: string) => serverLocaleMessages.value?.[key] || t(key)
     <div class="hero__actions">
       <a href="#register" class="hero__btn hero__btn--primary">
         <span class="hero__btnLabel">
-          {{ t('header.register') }}
+          {{ th('header.register') }}
         </span>
         <span class="hero__btnArrow" aria-hidden="true">
           <Icon icon="mdi:arrow-right" class="hero__btnIcon"/>
@@ -115,7 +108,7 @@ const th = (key: string) => serverLocaleMessages.value?.[key] || t(key)
       </a>
       <a href="#promo-code" class="hero__btn hero__btn--ghost">
         <span class="hero__btnLabel">
-          {{ t('header.promoCode') }}
+          {{ th('header.promoCode') }}
         </span>
         <span class="hero__btnArrow" aria-hidden="true">
           <Icon icon="mdi:ticket-percent" class="hero__btnIcon"/>
@@ -123,7 +116,7 @@ const th = (key: string) => serverLocaleMessages.value?.[key] || t(key)
       </a>
       <a href="#sign-in" class="hero__btn hero__btn--outline">
         <span class="hero__btnLabel">
-          {{ t('header.signIn') }}
+          {{ th('header.signIn') }}
         </span>
         <span class="hero__btnArrow" aria-hidden="true">
           <Icon icon="mdi:login" class="hero__btnIcon"/>
@@ -297,7 +290,7 @@ const th = (key: string) => serverLocaleMessages.value?.[key] || t(key)
       <table class="promo-info__table">
         <thead>
         <tr>
-          <th>{{ t('home.promoInfo.tableProduct') }}</th>
+          <th>{{ th('home.promoInfo.tableProduct') }}</th>
           <th>{{ th('home.promoInfo.tableProduct') }}</th>
           <th>{{ th('home.promoInfo.tablePromo') }}</th>
           <th>{{ th('home.promoInfo.tableOffer') }}</th>

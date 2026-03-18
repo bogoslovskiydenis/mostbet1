@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import AppHeader from '~/components/AppHeader.vue'
-import { useI18n } from '#imports'
 
-const { t } = useI18n({ useScope: 'global' })
+const { th } = useLocaleMessages()
 
 type FooterSettings = {
   brandText?: string
@@ -34,7 +33,7 @@ const footerSettings = computed<FooterSettings>(() => {
 
 const footerBrandText = computed(() => footerSettings.value.brandText || 'MOSTBET')
 const footerCopyright = computed(() => footerSettings.value.copyrightText || 'Copyright © 2026 MostBet.')
-const footerLegal = computed(() => footerSettings.value.legalText || t('home.footer.legal'))
+const footerLegal = computed(() => footerSettings.value.legalText || th('home.footer.legal'))
 </script>
 
 <template>
@@ -56,22 +55,22 @@ const footerLegal = computed(() => footerSettings.value.legalText || t('home.foo
         </div>
         <nav class="footer__nav" aria-label="Footer navigation">
           <a href="#register" class="footer__link">
-            {{ t('header.register') }}
+            {{ th('header.register') }}
           </a>
           <a href="#promo-code" class="footer__link">
-            {{ t('header.promoCode') }}
+            {{ th('header.promoCode') }}
           </a>
           <a href="#app" class="footer__link">
-            {{ t('header.app') }}
+            {{ th('header.app') }}
           </a>
           <a href="#review" class="footer__link">
-            {{ t('header.review') }}
+            {{ th('header.review') }}
           </a>
           <a href="#payments" class="footer__link">
-            {{ t('header.payments') }}
+            {{ th('header.payments') }}
           </a>
           <a href="#sign-in" class="footer__link footer__link--accent">
-            {{ t('header.signIn') }}
+            {{ th('header.signIn') }}
           </a>
         </nav>
       </div>

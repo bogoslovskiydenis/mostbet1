@@ -194,6 +194,36 @@ const form = reactive<Record<string, string>>({})
 const saving = ref(false)
 const errorMessage = ref('')
 
+const showAddLocale = ref(false)
+const newCode = ref('')
+const newName = ref('')
+const addingLocale = ref(false)
+const addLocaleError = ref('')
+
+async function addLocale() {
+  if (!newCode.value.trim() || !newName.value.trim()) return
+  try {
+    addingLocale.value = true
+    addLocaleError.value = ''
+    await $fetch('/api/admin/locales', {
+      method: 'POST',
+      body: { code: newCode.value.trim(), name: newName.value.trim() },
+    })
+    const code = newCode.value.trim()
+    newCode.value = ''
+    newName.value = ''
+    showAddLocale.value = false
+    await refresh()
+    activeLocale.value = code
+  }
+  catch (e: any) {
+    addLocaleError.value = e?.data?.statusMessage || 'Ошибка'
+  }
+  finally {
+    addingLocale.value = false
+  }
+}
+
 function loadForm() {
   const msgs = serverMessages.value
   for (const group of groups) {
@@ -241,14 +271,43 @@ async function save() {
     </h1>
 
     <form class="admin-page__form" @submit.prevent="save">
-      <label class="admin-page__field">
+      <div class="admin-page__field">
         <span class="admin-page__label">Локаль</span>
-        <select v-model="activeLocale" class="admin-page__input">
-          <option v-for="l in availableLocales" :key="l.code" :value="l.code">
-            {{ l.name }}
-          </option>
-        </select>
-      </label>
+        <div class="admin-page__localeRow">
+          <select v-model="activeLocale" class="admin-page__input">
+            <option v-for="l in availableLocales" :key="l.code" :value="l.code">
+              {{ l.name }}
+            </option>
+          </select>
+          <button type="button" class="admin-page__addLocaleBtn" @click="showAddLocale = !showAddLocale">
+            + Язык
+          </button>
+        </div>
+        <div v-if="showAddLocale" class="admin-page__addLocaleForm">
+          <input
+            v-model="newCode"
+            class="admin-page__input admin-page__input--sm"
+            placeholder="Код (напр. de)"
+            maxlength="10"
+          >
+          <input
+            v-model="newName"
+            class="admin-page__input admin-page__input--sm"
+            placeholder="Название (напр. Deutsch)"
+          >
+          <button
+            type="button"
+            class="admin-page__addLocaleBtn"
+            :disabled="addingLocale"
+            @click="addLocale"
+          >
+            {{ addingLocale ? '...' : 'Добавить' }}
+          </button>
+          <p v-if="addLocaleError" class="admin-page__error">
+            {{ addLocaleError }}
+          </p>
+        </div>
+      </div>
 
       <div v-for="group in groups" :key="group.title" class="admin-page__group">
         <h2 class="admin-page__groupTitle">
@@ -377,5 +436,44 @@ async function save() {
   margin: 0;
   font-size: 13px;
   color: #dc2626;
+}
+
+.admin-page__localeRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-page__localeRow .admin-page__input {
+  flex: 1;
+}
+
+.admin-page__addLocaleBtn {
+  color: black;
+  flex-shrink: 0;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-page__addLocaleBtn:hover {
+  background: #f3f4f6;
+}
+
+.admin-page__addLocaleForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  align-items: center;
+}
+
+.admin-page__input--sm {
+  width: 140px;
+  flex: unset;
 }
 </style>
