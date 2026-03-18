@@ -3,6 +3,38 @@ import AppHeader from '~/components/AppHeader.vue'
 import { useI18n } from '#imports'
 
 const { t } = useI18n({ useScope: 'global' })
+
+type FooterSettings = {
+  brandText?: string
+  copyrightText?: string
+  legalText?: string
+}
+
+type PageItem = {
+  slug: string
+  title: string
+  content: string
+}
+
+const { data: footerPage } = useFetch<PageItem | null>('/api/admin/pages', {
+  query: { slug: '_sys_footer' },
+})
+
+const footerSettings = computed<FooterSettings>(() => {
+  const raw = footerPage.value?.content || ''
+  if (!raw) {
+    return {}
+  }
+  try {
+    return JSON.parse(raw) as FooterSettings
+  } catch {
+    return {}
+  }
+})
+
+const footerBrandText = computed(() => footerSettings.value.brandText || 'MOSTBET')
+const footerCopyright = computed(() => footerSettings.value.copyrightText || 'Copyright © 2026 MostBet.')
+const footerLegal = computed(() => footerSettings.value.legalText || t('home.footer.legal'))
 </script>
 
 <template>
@@ -16,10 +48,10 @@ const { t } = useI18n({ useScope: 'global' })
       <div class="footer__top">
         <div class="footer__brand">
           <span class="footer__logo">
-            MOSTBET
+            {{ footerBrandText }}
           </span>
           <p class="footer__text">
-            Copyright © 2026 MostBet.
+            {{ footerCopyright }}
           </p>
         </div>
         <nav class="footer__nav" aria-label="Footer navigation">
@@ -44,7 +76,7 @@ const { t } = useI18n({ useScope: 'global' })
         </nav>
       </div>
       <p class="footer__legal">
-        {{ t('home.footer.legal') }}
+        {{ footerLegal }}
       </p>
     </footer>
   </div>

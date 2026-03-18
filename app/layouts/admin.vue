@@ -1,3 +1,25 @@
+<script setup lang="ts">
+function logout() {
+  try {
+    navigator.sendBeacon?.('/api/admin/logout')
+  } catch {
+    // ignore
+  }
+
+  try {
+    fetch('/api/admin/logout', { method: 'GET', keepalive: true }).catch(() => {})
+  } catch {
+    // ignore
+  }
+
+  try {
+    void navigateTo('/', { external: true })
+  } catch {
+    window.location.assign('/')
+  }
+}
+</script>
+
 <template>
   <div class="admin-layout">
     <aside class="admin-layout__sidebar">
@@ -5,7 +27,17 @@
         <NuxtLink to="/admin" class="admin-layout__link">
           Панель
         </NuxtLink>
+        <NuxtLink to="/admin/navbar" class="admin-layout__link">
+          Navbar
+        </NuxtLink>
+        <NuxtLink to="/admin/footer" class="admin-layout__link">
+          Footer
+        </NuxtLink>
       </nav>
+
+      <button type="button" class="admin-layout__logout" @click="logout">
+        Выйти
+      </button>
     </aside>
 
     <main class="admin-layout__content">
@@ -49,6 +81,22 @@
 .admin-layout__content {
   flex: 1;
   padding: 24px;
+}
+
+.admin-layout__logout {
+  margin-top: 16px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.admin-layout__logout:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 </style>
 

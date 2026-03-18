@@ -5,6 +5,17 @@ type NavItem = { key: string; href: string }
 type LocaleCode = 'en' | 'ru' | 'de' | 'es' | 'fr'
 type LangItem = { code: LocaleCode; label: string; flag: string }
 
+type NavbarSettings = {
+  brandText?: string
+  logoUrl?: string
+}
+
+type PageItem = {
+  slug: string
+  title: string
+  content: string
+}
+
 const nav: NavItem[] = [
   { key: 'header.register', href: '#register' },
   { key: 'header.promoCode', href: '#promo-code' },
@@ -35,6 +46,25 @@ const selectLang = async (code: LocaleCode) => {
   isLangOpen.value = false
 }
 
+const { data: navbarPage } = useFetch<PageItem | null>('/api/admin/pages', {
+  query: { slug: '_sys_navbar' },
+})
+
+const navbarSettings = computed<NavbarSettings>(() => {
+  const raw = navbarPage.value?.content || ''
+  if (!raw) {
+    return {}
+  }
+  try {
+    return JSON.parse(raw) as NavbarSettings
+  } catch {
+    return {}
+  }
+})
+
+const brandText = computed(() => navbarSettings.value.brandText || 'MOSTBET')
+const logoUrl = computed(() => navbarSettings.value.logoUrl || '')
+
 const burgerLabel = computed(() => (isOpen.value ? 'Close menu' : 'Open menu'))
 const currentLangLabel = computed(() => {
   const found = languages.find((x) => x.code === locale.value)
@@ -60,7 +90,13 @@ const currentLangLabel = computed(() => {
       </button>
 
       <NuxtLink to="/" class="header__brand" aria-label="MostBet home">
-        <span class="header__brandText">MOSTBET</span>
+        <img
+          v-if="logoUrl"
+          class="header__brandLogo"
+          :src="logoUrl"
+          :alt="brandText"
+        >
+        <span v-else class="header__brandText">{{ brandText }}</span>
       </NuxtLink>
 
       <nav class="header__nav" aria-label="Primary">
@@ -194,6 +230,12 @@ const currentLangLabel = computed(() => {
   font-weight: 800;
   letter-spacing: 0.06em;
   font-size: 14px;
+}
+
+.header__brandLogo {
+  height: 22px;
+  width: auto;
+  display: block;
 }
 
 .header__nav {

@@ -2,6 +2,7 @@
 const route = useRoute()
 
 const slug = computed(() => String(route.params.slug || ''))
+const isSystemSlug = computed(() => slug.value.startsWith('_'))
 
 type PageItem = {
   slug: string
@@ -9,7 +10,7 @@ type PageItem = {
   content: string
 }
 
-const { data: page, error, pending } = useFetch<PageItem | null>('/api/admin/pages', {
+const { data: page, error, pending } = useFetch<PageItem | null>(() => (isSystemSlug.value ? null : '/api/admin/pages'), {
   query: { slug },
 })
 </script>
@@ -20,7 +21,7 @@ const { data: page, error, pending } = useFetch<PageItem | null>('/api/admin/pag
       Загрузка...
     </div>
 
-    <div v-else-if="error || !page" class="dynamic-page__state">
+    <div v-else-if="isSystemSlug || error || !page" class="dynamic-page__state">
       Страница не найдена
     </div>
 

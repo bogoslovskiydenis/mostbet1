@@ -13,6 +13,10 @@ export default defineEventHandler((event) => {
     return
   }
 
+  if (path.startsWith('/api/admin') && (event.method || '').toUpperCase() === 'GET') {
+    return
+  }
+
   const expectedUser = process.env.NUXT_ADMIN_USER || 'admin'
   const expectedPass = process.env.NUXT_ADMIN_PASS || 'admin'
 
