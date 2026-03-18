@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {Icon} from '@iconify/vue'
 import banner from "../assets/images/main/banner_img.webp"
-import bannerReg from "../assets/images/main/registration.webp"
-import bannerPromo from "../assets/images/main/promocode.png"
-import bannerLogin from "../assets/images/main/login.webp"
+import bannerReg from "../assets/bonus/registration.webp"
+import bannerPromo from "../assets/bonus/promocode.png"
+import bannerLogin from "../assets/bonus/login.webp"
 
 type LocaleContent = {
   title: string
