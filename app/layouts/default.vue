@@ -82,8 +82,16 @@ const footerLegal = computed(() => footerSettings.value.legalText || th('home.fo
 </template>
 
 <style scoped>
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .app-main {
+  flex: 1;
   max-width: var(--container);
+  width: 100%;
   margin: 0 auto;
   padding: 0 20px 40px;
 }

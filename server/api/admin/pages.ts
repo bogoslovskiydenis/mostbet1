@@ -6,6 +6,10 @@ type PageItem = {
   slug: string
   title: string
   content: string
+  bannerUrl?: string
+  badge?: string
+  description?: string
+  ctaText?: string
 }
 
 const filePath = join(process.cwd(), 'app/utils/pages.json')
@@ -57,6 +61,10 @@ export default defineEventHandler(async (event) => {
       slug: body.slug,
       title: body.title,
       content: body.content ?? '',
+      ...(body.bannerUrl !== undefined && { bannerUrl: body.bannerUrl }),
+      ...(body.badge !== undefined && { badge: body.badge }),
+      ...(body.description !== undefined && { description: body.description }),
+      ...(body.ctaText !== undefined && { ctaText: body.ctaText }),
     }
 
     if (index === -1) {

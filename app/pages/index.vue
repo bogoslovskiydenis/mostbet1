@@ -4,75 +4,21 @@ import banner from "../assets/images/main/banner_img.webp"
 import bannerReg from "../assets/images/main/registration.webp"
 import bannerPromo from "../assets/images/main/promocode.png"
 import bannerLogin from "../assets/images/main/login.webp"
-import pragmaticBanner from "../assets/images/main/Pragmatic-Play-Drops-and-Wins-2026.jpg"
 
-const promos = [
-  {
-    id: 'pragmatic-prize-pool',
-    badgeKey: 'home.promos.pragmatic.badge',
-    titleKey: 'home.promos.pragmatic.title',
-    textKey: 'home.promos.pragmatic.text',
-    ctaKey: 'home.promos.pragmatic.cta',
-    href: '/casino/mostbet-pragmatic-play'
-  },
-  {
-    id: 'big-slots-prize',
-    badgeKey: 'home.promos.bigSlots.badge',
-    titleKey: 'home.promos.bigSlots.title',
-    textKey: 'home.promos.bigSlots.text',
-    ctaKey: 'home.promos.bigSlots.cta',
-    href: '#'
-  },
-  {
-    id: 'free-spins-competition',
-    badgeKey: 'home.promos.freeSpins.badge',
-    titleKey: 'home.promos.freeSpins.title',
-    textKey: 'home.promos.freeSpins.text',
-    ctaKey: 'home.promos.freeSpins.cta',
-    href: '#'
-  },
-  {
-    id: 'sports-bonus',
-    badgeKey: 'home.promos.sportsBonus.badge',
-    titleKey: 'home.promos.sportsBonus.title',
-    textKey: 'home.promos.sportsBonus.text',
-    ctaKey: 'home.promos.sportsBonus.cta',
-    href: '#'
-  },
-  {
-    id: 'bet-refund',
-    badgeKey: 'home.promos.betRefund.badge',
-    titleKey: 'home.promos.betRefund.title',
-    textKey: 'home.promos.betRefund.text',
-    ctaKey: 'home.promos.betRefund.cta',
-    href: '#'
-  },
-  {
-    id: 'weekly-bonuses',
-    badgeKey: 'home.promos.weeklyBonuses.badge',
-    titleKey: 'home.promos.weeklyBonuses.title',
-    textKey: 'home.promos.weeklyBonuses.text',
-    ctaKey: 'home.promos.weeklyBonuses.cta',
-    href: '#'
-  },
-  {
-    id: 'win-free-bets',
-    badgeKey: 'home.promos.winFreeBets.badge',
-    titleKey: 'home.promos.winFreeBets.title',
-    textKey: 'home.promos.winFreeBets.text',
-    ctaKey: 'home.promos.winFreeBets.cta',
-    href: '#'
-  },
-  {
-    id: 'weekly-casino-reward',
-    badgeKey: 'home.promos.weeklyCasino.badge',
-    titleKey: 'home.promos.weeklyCasino.title',
-    textKey: 'home.promos.weeklyCasino.text',
-    ctaKey: 'home.promos.weeklyCasino.cta',
-    href: '#'
-  }
-]
+type DynamicPage = {
+  slug: string
+  title: string
+  content: string
+  bannerUrl?: string
+  badge?: string
+  description?: string
+  ctaText?: string
+}
 
+const { data: allPages } = useFetch<DynamicPage[]>('/api/admin/pages')
+const dynamicPages = computed(() =>
+  (allPages.value || []).filter(p => !p.slug.startsWith('_'))
+)
 
 const { th } = useLocaleMessages()
 </script>
@@ -394,35 +340,27 @@ const { th } = useLocaleMessages()
       {{ th('home.promos.allTitle') }}
     </h2>
     <div class="promo-grid__list">
-      <a
-        v-for="promo in promos"
-        :key="promo.id"
+      <NuxtLink
+        v-for="page in dynamicPages"
+        :key="page.slug"
         class="promo-card"
-        :href="promo.href"
+        :to="`/${page.slug}`"
       >
         <div class="promo-card__image">
           <img
-              v-if="promo.id === 'pragmatic-prize-pool'"
-              :src="pragmaticBanner"
-              alt="MostBet Pragmatic Play Drops &amp; Wins"
-              loading="lazy"
+            v-if="page.bannerUrl"
+            :src="page.bannerUrl"
+            :alt="page.title"
+            loading="lazy"
           >
         </div>
         <div class="promo-card__body">
-          <div class="promo-card__badge">
-            {{ th(promo.badgeKey) }}
-          </div>
-          <h3 class="promo-card__title">
-            {{ th(promo.titleKey) }}
-          </h3>
-          <p class="promo-card__text">
-            {{ th(promo.textKey) }}
-          </p>
-          <span class="promo-card__cta">
-            {{ th(promo.ctaKey) }}
-          </span>
+          <div v-if="page.badge" class="promo-card__badge">{{ page.badge }}</div>
+          <h3 class="promo-card__title">{{ page.title }}</h3>
+          <p v-if="page.description" class="promo-card__text">{{ page.description }}</p>
+          <span v-if="page.ctaText" class="promo-card__cta">{{ page.ctaText }}</span>
         </div>
-      </a>
+      </NuxtLink>
     </div>
   </section>
 
