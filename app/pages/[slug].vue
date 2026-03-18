@@ -636,7 +636,28 @@ onUnmounted(() => {
 }
 
 @media (max-width: 899px) {
-  .promo__grid { grid-template-columns: minmax(0, 1fr); }
-  .promo__aside { display: none; }
+  .promo__grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .promo__body {
+    order: 1;
+  }
+
+  .promo__aside {
+    order: 2;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .promoNav {
+    display: none;
+  }
+
+  .promoNews {
+    margin-top: 0;
+  }
 }
 </style>
