@@ -30,6 +30,12 @@ function getLocaleData(page: DynamicPage) {
   return page.locales[locale.value] || page.locales['en'] || Object.values(page.locales)[0] || null
 }
 
+function resolveBannerUrl(url?: string) {
+  if (!url) return ''
+  if (url === '__asset:promocode__') return bannerPromo
+  return url
+}
+
 const { th } = useLocaleMessages()
 </script>
 
@@ -357,7 +363,12 @@ const { th } = useLocaleMessages()
         :to="`/${page.slug}`"
       >
         <div class="promo-card__image">
-          <img v-if="page.bannerUrl" :src="page.bannerUrl" :alt="getLocaleData(page)?.title || page.slug" loading="lazy">
+          <img
+            v-if="resolveBannerUrl(page.bannerUrl)"
+            :src="resolveBannerUrl(page.bannerUrl)"
+            :alt="getLocaleData(page)?.title || page.slug"
+            loading="lazy"
+          >
         </div>
         <div class="promo-card__body">
           <template v-if="getLocaleData(page)">

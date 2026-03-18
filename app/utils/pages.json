@@ -20,8 +20,41 @@
     }
   },
   {
+    "slug": "promo-code",
+    "bannerUrl": "__asset:promocode__",
+    "locales": {
+      "en": {
+        "title": "Promo Code",
+        "badge": "WELCOME OFFER",
+        "description": "Use promo code HUGE at signup to unlock your welcome offer.",
+        "ctaText": "Get bonus",
+        "content": "<p>Use the promo code <strong>HUGE</strong> at signup to receive a 150% deposit match up to $300, including free spins. Full details on this page.</p>\n\n<h2>How to use the promo code</h2>\n<ol>\n  <li>Open the registration form.</li>\n  <li>Enter <strong>HUGE</strong> in the promo code field.</li>\n  <li>Complete signup and make your first deposit.</li>\n</ol>\n\n<h2>What you get</h2>\n<ul>\n  <li>150% deposit match up to $300</li>\n  <li>Free spins included (subject to the current offer)</li>\n</ul>\n\n<h2>Notes</h2>\n<ul>\n  <li>The promo code must be entered during registration.</li>\n  <li>Bonus terms may vary by country and account currency.</li>\n</ul>"
+      },
+      "ru": {
+        "title": "Промокод",
+        "badge": "WELCOME OFFER",
+        "description": "Введите промокод HUGE при регистрации и активируйте бонус.",
+        "ctaText": "Получить бонус",
+        "content": "<p>Введите промокод <strong>HUGE</strong> при регистрации, чтобы получить бонус: 150% к депозиту до $300, включая фриспины. Полные условия — ниже.</p>\n\n<h2>Как применить промокод</h2>\n<ol>\n  <li>Откройте форму регистрации.</li>\n  <li>Укажите <strong>HUGE</strong> в поле промокода.</li>\n  <li>Завершите регистрацию и внесите первый депозит.</li>\n</ol>\n\n<h2>Что вы получите</h2>\n<ul>\n  <li>150% к депозиту до $300</li>\n  <li>Фриспины (в зависимости от текущего оффера)</li>\n</ul>\n\n<h2>Важно</h2>\n<ul>\n  <li>Промокод нужно вводить именно во время регистрации.</li>\n  <li>Условия бонуса могут отличаться по стране и валюте аккаунта.</li>\n</ul>"
+      }
+    }
+  },
+  {
     "slug": "_sys_navbar",
     "title": "Navbar",
-    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"#promo-code\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"#promo-code\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"#promo-code\"\n      }\n    ]\n  }\n}"
+    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  }\n}"
+  },
+  {
+    "slug": "13213",
+    "bannerUrl": "",
+    "locales": {
+      "en": {
+        "title": "321321321",
+        "content": "111",
+        "badge": "31312312",
+        "description": "3123123",
+        "ctaText": "31321"
+      }
+    }
   }
 ]

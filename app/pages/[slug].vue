@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import promoBannerUrl from '~/assets/images/main/promocode.png?url'
 
 const route = useRoute()
 const { locale } = useAppLocale()
@@ -32,6 +33,14 @@ const localePage = computed<LocaleContent | null>(() => {
     || Object.values(page.value.locales)[0]
     || null
 })
+
+const bannerSrc = computed(() => {
+  const url = page.value?.bannerUrl || ''
+  if (url === '__asset:promocode__') return promoBannerUrl
+  return url
+})
+
+const isPromoCodePage = computed(() => slug.value === 'promo-code')
 </script>
 
 <template>
@@ -57,9 +66,9 @@ const localePage = computed<LocaleContent | null>(() => {
         <h1 class="dpage__title">{{ localePage.title }}</h1>
       </header>
 
-      <section v-if="page.bannerUrl" class="dpage__hero">
-        <div class="dpage__heroImage">
-          <img :src="page.bannerUrl" :alt="localePage.title" loading="lazy">
+      <section v-if="bannerSrc" class="dpage__hero">
+        <div class="dpage__heroImage" :class="{ 'dpage__heroImage--compact': isPromoCodePage }">
+          <img :src="bannerSrc" :alt="localePage.title" loading="lazy">
         </div>
       </section>
 
@@ -148,6 +157,15 @@ const localePage = computed<LocaleContent | null>(() => {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.dpage__heroImage--compact {
+  max-height: 420px;
+}
+
+.dpage__heroImage--compact img {
+  object-fit: cover;
+  object-position: center;
 }
 
 .dpage__body {
