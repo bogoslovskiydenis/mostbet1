@@ -18,8 +18,10 @@ type PageItem = {
 const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages')
 const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
+const excludedSlugs = ['promo-code']
+
 const newsPages = computed(() =>
-  (pages.value || []).filter(p => !p.slug.startsWith('_')),
+  (pages.value || []).filter(p => !p.slug.startsWith('_') && !excludedSlugs.includes(p.slug)),
 )
 
 const availableLocales = computed(() => localesData.value?.locales || [{ code: 'en', name: 'English' }])

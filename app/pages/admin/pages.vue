@@ -15,15 +15,11 @@ type PageItem = {
   locales?: Record<string, LocaleContent>
 }
 
-const reservedSlugs = ['mostbet-pragmatic-play', '13213']
-
 const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages')
 const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
 const promoPages = computed(() =>
-  (pages.value || []).filter(p =>
-    !p.slug.startsWith('_') && !reservedSlugs.includes(p.slug),
-  )
+  (pages.value || []).filter(p => p.slug === 'promo-code'),
 )
 
 const availableLocales = computed(() => localesData.value?.locales || [{ code: 'en', name: 'English' }])

@@ -2,7 +2,7 @@
 const route = useRoute()
 
 const isHomeSectionActive = computed(
-  () => route.path.startsWith('/admin/home') || route.path.startsWith('/admin/news'),
+  () => route.path.startsWith('/admin/home') || route.path.startsWith('/admin/news') || route.path.startsWith('/admin/pages'),
 )
 
 function logout() {
@@ -40,6 +40,9 @@ function logout() {
           </NuxtLink>
           <NuxtLink to="/admin/news" class="admin-layout__sublink">
             News
+          </NuxtLink>
+          <NuxtLink to="/admin/pages" class="admin-layout__sublink">
+            Promo Code
           </NuxtLink>
         </div>
 
