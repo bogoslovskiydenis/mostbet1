@@ -2,12 +2,15 @@
 import { computed, ref } from 'vue'
 
 type NavItem = { key: string; href: string }
-type LocaleCode = 'en' | 'ru' | 'de' | 'es' | 'fr'
-type LangItem = { code: LocaleCode; label: string; flag: string }
+type LocaleCode = string
 
-type NavbarSettings = {
+type NavbarLink = { label: string; href: string }
+type NavbarLocaleSettings = {
   brandText?: string
   logoUrl?: string
+  links?: NavbarLink[]
+  signInLabel?: string
+  signInHref?: string
 }
 
 type PageItem = {
@@ -24,15 +27,9 @@ const nav: NavItem[] = [
   { key: 'header.payments', href: '#payments' },
 ]
 
-const languages: LangItem[] = [
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-]
-
 const { locale, t, setLocale } = useI18n({ useScope: 'global' })
+
+const { data: serverLocales } = useFetch<{ code: string; name: string }[]>('/api/locales')
 
 const isOpen = ref(false)
 const toggle = () => (isOpen.value = !isOpen.value)
@@ -50,25 +47,37 @@ const { data: navbarPage } = useFetch<PageItem | null>('/api/admin/pages', {
   query: { slug: '_sys_navbar' },
 })
 
-const navbarSettings = computed<NavbarSettings>(() => {
+const navbarSettings = computed<Partial<Record<LocaleCode, NavbarLocaleSettings>>>(() => {
   const raw = navbarPage.value?.content || ''
   if (!raw) {
     return {}
   }
   try {
-    return JSON.parse(raw) as NavbarSettings
+    return JSON.parse(raw) as Partial<Record<LocaleCode, NavbarLocaleSettings>>
   } catch {
     return {}
   }
 })
 
-const brandText = computed(() => navbarSettings.value.brandText || 'MOSTBET')
-const logoUrl = computed(() => navbarSettings.value.logoUrl || '')
+const currentNavbar = computed<NavbarLocaleSettings>(() => navbarSettings.value[locale.value] || {})
+const brandText = computed(() => currentNavbar.value.brandText || 'MOSTBET')
+const logoUrl = computed(() => currentNavbar.value.logoUrl || '')
+
+const navLinks = computed(() => {
+  const custom = currentNavbar.value.links || []
+  if (custom.length) {
+    return custom
+  }
+  return nav.map((x) => ({ label: t(x.key), href: x.href }))
+})
+
+const signInLabel = computed(() => currentNavbar.value.signInLabel || t('header.signIn'))
+const signInHref = computed(() => currentNavbar.value.signInHref || '#sign-in')
 
 const burgerLabel = computed(() => (isOpen.value ? 'Close menu' : 'Open menu'))
 const currentLangLabel = computed(() => {
-  const found = languages.find((x) => x.code === locale.value)
-  return found?.code.toUpperCase() ?? 'EN'
+  const found = serverLocales.value?.find(x => x.code === locale.value)
+  return (found?.code || locale.value || 'en').toUpperCase()
 })
 </script>
 
@@ -100,8 +109,8 @@ const currentLangLabel = computed(() => {
       </NuxtLink>
 
       <nav class="header__nav" aria-label="Primary">
-        <a v-for="item in nav" :key="item.key" class="header__link" :href="item.href">
-          {{ t(item.key) }}
+        <a v-for="item in navLinks" :key="item.href + item.label" class="header__link" :href="item.href">
+          {{ item.label }}
         </a>
       </nav>
 
@@ -109,7 +118,7 @@ const currentLangLabel = computed(() => {
         <button class="header__lang" type="button" aria-label="Language" @click="toggleLang">
           <span class="header__langText">{{ currentLangLabel }}</span>
         </button>
-        <a class="header__signin" href="#sign-in">{{ t('header.signIn') }}</a>
+        <a class="header__signin" :href="signInHref">{{ signInLabel }}</a>
 
         <div v-if="isLangOpen" class="langDropdown">
           <div class="langDropdown__header">
@@ -122,15 +131,14 @@ const currentLangLabel = computed(() => {
           </div>
           <div class="langDropdown__list">
             <button
-              v-for="item in languages"
+              v-for="item in (serverLocales || [])"
               :key="item.code"
               type="button"
               class="langDropdown__item"
               :class="{ 'langDropdown__item--active': item.code === locale }"
               @click="selectLang(item.code)"
             >
-              <span class="langDropdown__flag">{{ item.flag }}</span>
-              <span class="langDropdown__label">{{ item.label }}</span>
+              <span class="langDropdown__label">{{ item.name || item.code }}</span>
             </button>
           </div>
         </div>
@@ -140,16 +148,16 @@ const currentLangLabel = computed(() => {
     <div v-show="isOpen" class="header__mobile">
       <nav class="header__mobileNav" aria-label="Mobile primary">
         <a
-          v-for="item in nav"
-          :key="item.key"
+          v-for="item in navLinks"
+          :key="item.href + item.label"
           class="header__mobileLink"
           :href="item.href"
           @click="close"
         >
-          {{ t(item.key) }}
+          {{ item.label }}
         </a>
-        <a class="header__mobileLink header__mobileLink--accent" href="#sign-in" @click="close">
-          {{ t('header.signIn') }}
+        <a class="header__mobileLink header__mobileLink--accent" :href="signInHref" @click="close">
+          {{ signInLabel }}
         </a>
       </nav>
     </div>

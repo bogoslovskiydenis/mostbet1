@@ -74,7 +74,14 @@ const promos = [
   }
 ]
 
-const {t} = useI18n({useScope: 'global'})
+
+const { t, locale } = useI18n({ useScope: 'global' })
+
+const { data: serverLocaleMessages } = useFetch<Record<string, string>>(
+  () => `/api/locales/${locale.value}`,
+)
+
+const th = (key: string) => serverLocaleMessages.value?.[key] || t(key)
 </script>
 
 <template>
@@ -82,10 +89,10 @@ const {t} = useI18n({useScope: 'global'})
     <div class="hero__top">
       <div class="hero__content">
         <h1 class="hero__title">
-          {{ t('hero.title') }}
+          {{ th('hero.title') }}
         </h1>
         <p class="hero__subtitle">
-          {{ t('hero.subtitle') }}
+          {{ th('hero.subtitle') }}
         </p>
       </div>
       <div class="hero__media">
@@ -136,15 +143,15 @@ const {t} = useI18n({useScope: 'global'})
         >
       </div>
       <div class="info-card__content">
-        <h2 class="info-card__title">{{ t('home.info.registration.title') }}</h2>
+        <h2 class="info-card__title">{{ th('home.info.registration.title') }}</h2>
         <p class="info-card__text">
-          {{ t('home.info.registration.p1') }}
+          {{ th('home.info.registration.p1') }}
         </p>
         <p class="info-card__text">
-          {{ t('home.info.registration.p2') }}
+          {{ th('home.info.registration.p2') }}
         </p>
         <p class="info-card__text">
-          {{ t('home.info.registration.p3') }}
+          {{ th('home.info.registration.p3') }}
         </p>
         <a href="#register" class="info-card__button info-card__button--primary">
           Register
@@ -162,15 +169,15 @@ const {t} = useI18n({useScope: 'global'})
         >
       </div>
       <div class="info-card__content">
-        <h2 class="info-card__title">{{ t('home.info.promo.title') }}</h2>
+        <h2 class="info-card__title">{{ th('home.info.promo.title') }}</h2>
         <p class="info-card__text">
-          {{ t('home.info.promo.p1') }}
+          {{ th('home.info.promo.p1') }}
         </p>
         <p class="info-card__text">
-          {{ t('home.info.promo.p2') }}
+          {{ th('home.info.promo.p2') }}
         </p>
         <p class="info-card__text">
-          {{ t('home.info.promo.p3') }}
+          {{ th('home.info.promo.p3') }}
         </p>
         <a href="#promo-code" class="info-card__button info-card__button--primary">
           Promo Code
@@ -188,15 +195,15 @@ const {t} = useI18n({useScope: 'global'})
         >
       </div>
       <div class="info-card__content">
-        <h2 class="info-card__title">{{ t('home.info.login.title') }}</h2>
+        <h2 class="info-card__title">{{ th('home.info.login.title') }}</h2>
         <p class="info-card__text">
-          {{ t('home.info.login.p1') }}
+          {{ th('home.info.login.p1') }}
         </p>
         <p class="info-card__text">
-          {{ t('home.info.login.p2') }}
+          {{ th('home.info.login.p2') }}
         </p>
         <p class="info-card__text">
-          {{ t('home.info.login.p3') }}
+          {{ th('home.info.login.p3') }}
         </p>
         <a href="#sign-in" class="info-card__button info-card__button--primary">
           Log In
@@ -207,65 +214,65 @@ const {t} = useI18n({useScope: 'global'})
 
   <section class="info-table">
     <h2 class="info-table__title">
-      {{ t('home.infoTable.title') }}
+      {{ th('home.infoTable.title') }}
     </h2>
     <h3 class="info-table__subtitle">
-      {{ t('home.infoTable.subtitle') }}
+      {{ th('home.infoTable.subtitle') }}
     </h3>
     <div class="info-table__wrapper">
       <table class="info-table__table">
         <tbody>
         <tr>
-          <th>{{ t('home.infoTable.website') }}</th>
-          <td><a href="#" class="info-table__link">{{ t('home.infoTable.websiteValue') }}</a></td>
+          <th>{{ th('home.infoTable.website') }}</th>
+          <td><a href="#" class="info-table__link">{{ th('home.infoTable.websiteValue') }}</a></td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.products') }}</th>
-          <td>{{ t('home.infoTable.productsValue') }}</td>
+          <th>{{ th('home.infoTable.products') }}</th>
+          <td>{{ th('home.infoTable.productsValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.promoCode') }}</th>
-          <td><strong>{{ t('home.infoTable.promoCodeValue') }}</strong></td>
+          <th>{{ th('home.infoTable.promoCode') }}</th>
+          <td><strong>{{ th('home.infoTable.promoCodeValue') }}</strong></td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.depositBonus') }}</th>
-          <td>{{ t('home.infoTable.depositBonusValue') }}</td>
+          <th>{{ th('home.infoTable.depositBonus') }}</th>
+          <td>{{ th('home.infoTable.depositBonusValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.bonusValue') }}</th>
-          <td>{{ t('home.infoTable.bonusValueValue') }}</td>
+          <th>{{ th('home.infoTable.bonusValue') }}</th>
+          <td>{{ th('home.infoTable.bonusValueValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.established') }}</th>
-          <td>{{ t('home.infoTable.establishedValue') }}</td>
+          <th>{{ th('home.infoTable.established') }}</th>
+          <td>{{ th('home.infoTable.establishedValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.acceptedCrypto') }}</th>
-          <td>{{ t('home.infoTable.acceptedCryptoValue') }}</td>
+          <th>{{ th('home.infoTable.acceptedCrypto') }}</th>
+          <td>{{ th('home.infoTable.acceptedCryptoValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.currencies') }}</th>
-          <td>{{ t('home.infoTable.currenciesValue') }}</td>
+          <th>{{ th('home.infoTable.currencies') }}</th>
+          <td>{{ th('home.infoTable.currenciesValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.websiteLanguages') }}</th>
-          <td>{{ t('home.infoTable.websiteLanguagesValue') }}</td>
+          <th>{{ th('home.infoTable.websiteLanguages') }}</th>
+          <td>{{ th('home.infoTable.websiteLanguagesValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.mobileApp') }}</th>
-          <td>{{ t('home.infoTable.mobileAppValue') }}</td>
+          <th>{{ th('home.infoTable.mobileApp') }}</th>
+          <td>{{ th('home.infoTable.mobileAppValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.liveSupport') }}</th>
-          <td>{{ t('home.infoTable.liveSupportValue') }}</td>
+          <th>{{ th('home.infoTable.liveSupport') }}</th>
+          <td>{{ th('home.infoTable.liveSupportValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.liveStreaming') }}</th>
-          <td>{{ t('home.infoTable.liveStreamingValue') }}</td>
+          <th>{{ th('home.infoTable.liveStreaming') }}</th>
+          <td>{{ th('home.infoTable.liveStreamingValue') }}</td>
         </tr>
         <tr>
-          <th>{{ t('home.infoTable.minimumDeposit') }}</th>
-          <td>{{ t('home.infoTable.minimumDepositValue') }}</td>
+          <th>{{ th('home.infoTable.minimumDeposit') }}</th>
+          <td>{{ th('home.infoTable.minimumDepositValue') }}</td>
         </tr>
         </tbody>
       </table>
@@ -274,123 +281,124 @@ const {t} = useI18n({useScope: 'global'})
 
   <section class="promo-info">
     <h2 class="promo-info__title">
-      {{ t('home.promoInfo.title') }}
+      {{ th('home.promoInfo.title') }}
     </h2>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p1') }}
+      {{ th('home.promoInfo.p1') }}
     </p>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p2') }}
+      {{ th('home.promoInfo.p2') }}
     </p>
 
     <h3 class="promo-info__subtitle">
-      {{ t('home.promoInfo.summaryTitle') }}
+      {{ th('home.promoInfo.summaryTitle') }}
     </h3>
     <div class="promo-info__tableWrapper">
       <table class="promo-info__table">
         <thead>
         <tr>
           <th>{{ t('home.promoInfo.tableProduct') }}</th>
-          <th>{{ t('home.promoInfo.tablePromo') }}</th>
-          <th>{{ t('home.promoInfo.tableOffer') }}</th>
+          <th>{{ th('home.promoInfo.tableProduct') }}</th>
+          <th>{{ th('home.promoInfo.tablePromo') }}</th>
+          <th>{{ th('home.promoInfo.tableOffer') }}</th>
         </tr>
         </thead>
         <tbody>
         <tr>
           <td>MostBet Sports</td>
           <td><strong>HUGE</strong></td>
-          <td>{{ t('home.promoInfo.sportsRowOffer') }}</td>
+          <td>{{ th('home.promoInfo.sportsRowOffer') }}</td>
         </tr>
         <tr>
           <td>MostBet Casino</td>
           <td><strong>HUGE</strong></td>
-          <td>{{ t('home.promoInfo.casinoRowOffer') }}</td>
+          <td>{{ th('home.promoInfo.casinoRowOffer') }}</td>
         </tr>
         </tbody>
       </table>
     </div>
 
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p3') }}
+      {{ th('home.promoInfo.p3') }}
     </p>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p4') }}
+      {{ th('home.promoInfo.p4') }}
     </p>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p5') }}
+      {{ th('home.promoInfo.p5') }}
     </p>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p6') }}
+      {{ th('home.promoInfo.p6') }}
     </p>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p7') }}
+      {{ th('home.promoInfo.p7') }}
     </p>
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p8') }}
+      {{ th('home.promoInfo.p8') }}
     </p>
 
     <p class="promo-info__text">
-      {{ t('home.promoInfo.p9') }}
+      {{ th('home.promoInfo.p9') }}
     </p>
     <ul class="promo-info__list">
-      <li>{{ t('home.promoInfo.listQuick') }}</li>
-      <li>{{ t('home.promoInfo.listPhone') }}</li>
-      <li>{{ t('home.promoInfo.listEmail') }}</li>
-      <li>{{ t('home.promoInfo.listSocial') }}</li>
+      <li>{{ th('home.promoInfo.listQuick') }}</li>
+      <li>{{ th('home.promoInfo.listPhone') }}</li>
+      <li>{{ th('home.promoInfo.listEmail') }}</li>
+      <li>{{ th('home.promoInfo.listSocial') }}</li>
     </ul>
   </section>
 
   <section class="official-info">
     <h2 class="official-info__title">
-      {{ t('home.official.title') }}
+      {{ th('home.official.title') }}
     </h2>
     <p class="official-info__text">
-      {{ t('home.official.p1') }}
+      {{ th('home.official.p1') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.p2') }}
+      {{ th('home.official.p2') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.p3') }}
+      {{ th('home.official.p3') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.p4') }}
+      {{ th('home.official.p4') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.p5') }}
+      {{ th('home.official.p5') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.p6') }}
+      {{ th('home.official.p6') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.p7') }}
+      {{ th('home.official.p7') }}
     </p>
 
     <h3 class="official-info__subtitle">
-      {{ t('home.official.paymentsTitle') }}
+      {{ th('home.official.paymentsTitle') }}
     </h3>
     <p class="official-info__text">
-      {{ t('home.official.paymentsP1') }}
+      {{ th('home.official.paymentsP1') }}
     </p>
     <p class="official-info__text">
-      {{ t('home.official.paymentsP2') }}
+      {{ th('home.official.paymentsP2') }}
     </p>
     <ul class="official-info__list">
-      <li>{{ t('home.official.paymentsList.mastercard') }}</li>
-      <li>{{ t('home.official.paymentsList.visa') }}</li>
-      <li>{{ t('home.official.paymentsList.bitcoin') }}</li>
-      <li>{{ t('home.official.paymentsList.ethereum') }}</li>
-      <li>{{ t('home.official.paymentsList.litecoin') }}</li>
-      <li>{{ t('home.official.paymentsList.ecopayz') }}</li>
-      <li>{{ t('home.official.paymentsList.googlePay') }}</li>
-      <li>{{ t('home.official.paymentsList.webmoney') }}</li>
-      <li>{{ t('home.official.paymentsList.qiwi') }}</li>
+      <li>{{ th('home.official.paymentsList.mastercard') }}</li>
+      <li>{{ th('home.official.paymentsList.visa') }}</li>
+      <li>{{ th('home.official.paymentsList.bitcoin') }}</li>
+      <li>{{ th('home.official.paymentsList.ethereum') }}</li>
+      <li>{{ th('home.official.paymentsList.litecoin') }}</li>
+      <li>{{ th('home.official.paymentsList.ecopayz') }}</li>
+      <li>{{ th('home.official.paymentsList.googlePay') }}</li>
+      <li>{{ th('home.official.paymentsList.webmoney') }}</li>
+      <li>{{ th('home.official.paymentsList.qiwi') }}</li>
     </ul>
   </section>
 
   <section class="promo-grid">
     <h2 class="promo-grid__title">
-      {{ t('home.promos.allTitle') }}
+      {{ th('home.promos.allTitle') }}
     </h2>
     <div class="promo-grid__list">
       <a
@@ -409,16 +417,16 @@ const {t} = useI18n({useScope: 'global'})
         </div>
         <div class="promo-card__body">
           <div class="promo-card__badge">
-            {{ t(promo.badgeKey) }}
+            {{ th(promo.badgeKey) }}
           </div>
           <h3 class="promo-card__title">
-            {{ t(promo.titleKey) }}
+            {{ th(promo.titleKey) }}
           </h3>
           <p class="promo-card__text">
-            {{ t(promo.textKey) }}
+            {{ th(promo.textKey) }}
           </p>
           <span class="promo-card__cta">
-            {{ t(promo.ctaKey) }}
+            {{ th(promo.ctaKey) }}
           </span>
         </div>
       </a>
@@ -427,38 +435,38 @@ const {t} = useI18n({useScope: 'global'})
 
   <section class="faq">
     <h2 class="faq__title">
-      {{ t('home.faq.title') }}
+      {{ th('home.faq.title') }}
     </h2>
     <div class="faq__item">
       <h3 class="faq__question">
-        {{ t('home.faq.q1.question') }}
+        {{ th('home.faq.q1.question') }}
       </h3>
       <p class="faq__answer">
-        {{ t('home.faq.q1.answer') }}
+        {{ th('home.faq.q1.answer') }}
       </p>
     </div>
     <div class="faq__item">
       <h3 class="faq__question">
-        {{ t('home.faq.q2.question') }}
+        {{ th('home.faq.q2.question') }}
       </h3>
       <p class="faq__answer">
-        {{ t('home.faq.q2.answer') }}
+        {{ th('home.faq.q2.answer') }}
       </p>
     </div>
     <div class="faq__item">
       <h3 class="faq__question">
-        {{ t('home.faq.q3.question') }}
+        {{ th('home.faq.q3.question') }}
       </h3>
       <p class="faq__answer">
-        {{ t('home.faq.q3.answer') }}
+        {{ th('home.faq.q3.answer') }}
       </p>
     </div>
     <div class="faq__item">
       <h3 class="faq__question">
-        {{ t('home.faq.q4.question') }}
+        {{ th('home.faq.q4.question') }}
       </h3>
       <p class="faq__answer">
-        {{ t('home.faq.q4.answer') }}
+        {{ th('home.faq.q4.answer') }}
       </p>
     </div>
   </section>

@@ -3,5 +3,10 @@
     "slug": "example-page",
     "title": "Пример страницы",
     "content": "Это пример динамической страницы. Отредактируй или удали её в админке."
+  },
+  {
+    "slug": "_sys_navbar",
+    "title": "Navbar",
+    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"#promo-code\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"#promo-code\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"#promo-code\"\n      }\n    ]\n  }\n}"
   }
 ]

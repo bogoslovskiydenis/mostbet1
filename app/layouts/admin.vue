@@ -27,11 +27,17 @@ function logout() {
         <NuxtLink to="/admin" class="admin-layout__link">
           Панель
         </NuxtLink>
+        <NuxtLink to="/admin/home" class="admin-layout__link">
+          Главная
+        </NuxtLink>
         <NuxtLink to="/admin/navbar" class="admin-layout__link">
           Navbar
         </NuxtLink>
         <NuxtLink to="/admin/footer" class="admin-layout__link">
           Footer
+        </NuxtLink>
+        <NuxtLink to="/admin/locales" class="admin-layout__link">
+          Языки
         </NuxtLink>
       </nav>
 
