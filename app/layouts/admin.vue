@@ -2,7 +2,11 @@
 const route = useRoute()
 
 const isHomeSectionActive = computed(
-  () => route.path.startsWith('/admin/home') || route.path.startsWith('/admin/news') || route.path.startsWith('/admin/pages'),
+  () => route.path.startsWith('/admin/home') || route.path.startsWith('/admin/news'),
+)
+
+const isPromoSectionActive = computed(
+  () => route.path.startsWith('/admin/pages') || route.path.startsWith('/admin/promo-news'),
 )
 
 function logout() {
@@ -36,13 +40,23 @@ function logout() {
             class="admin-layout__link"
             :class="{ 'admin-layout__link--active': isHomeSectionActive }"
           >
-          Главная
+            Главная
           </NuxtLink>
           <NuxtLink to="/admin/news" class="admin-layout__sublink">
             News
           </NuxtLink>
-          <NuxtLink to="/admin/pages" class="admin-layout__sublink">
+        </div>
+
+        <div class="admin-layout__section">
+          <NuxtLink
+            to="/admin/pages"
+            class="admin-layout__link"
+            :class="{ 'admin-layout__link--active': isPromoSectionActive }"
+          >
             Promo Code
+          </NuxtLink>
+          <NuxtLink to="/admin/promo-news" class="admin-layout__sublink">
+            News
           </NuxtLink>
         </div>
 

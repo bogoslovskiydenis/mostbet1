@@ -22,7 +22,9 @@ const { locale } = useAppLocale()
 
 const { data: allPages } = useFetch<DynamicPage[]>('/api/admin/pages')
 const dynamicPages = computed(() =>
-  (allPages.value || []).filter(p => !p.slug.startsWith('_'))
+  (allPages.value || []).filter(p =>
+    !p.slug.startsWith('_') && p.slug !== 'promo-code' && !p.slug.startsWith('promo-news-'),
+  ),
 )
 
 function getLocaleData(page: DynamicPage) {
@@ -360,7 +362,7 @@ const { th } = useLocaleMessages()
         v-for="page in dynamicPages"
         :key="page.slug"
         class="promo-card"
-        :to="`/${page.slug}`"
+        :to="`/promo-code/${page.slug}`"
       >
         <div class="promo-card__image">
           <img

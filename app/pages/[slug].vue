@@ -55,6 +55,10 @@ const bannerSrc = computed(() => {
 
 const isPromoCodePage = computed(() => slug.value === 'promo-code')
 
+const newsPages = computed(() =>
+  (allPages.value || []).filter(p => p.slug.startsWith('promo-news-')),
+)
+
 function resolveBannerUrl(url?: string) {
   if (!url) return ''
   if (url === '__asset:promocode__') return promoBannerUrl
@@ -131,6 +135,34 @@ const promoToc = computed<TocItem[]>(() => {
       <section v-if="bannerSrc" class="dpage__hero">
         <div class="dpage__heroImage" :class="{ 'dpage__heroImage--compact': isPromoCodePage }">
           <img :src="bannerSrc" :alt="localePage.title" loading="lazy">
+        </div>
+      </section>
+
+      <section v-if="isPromoCodePage && newsPages.length" class="dpage__news">
+        <div class="dpage__newsList">
+          <NuxtLink
+            v-for="item in newsPages"
+            :key="item.slug"
+            class="promo-card"
+            :to="`/promo-code/${item.slug}`"
+          >
+            <div class="promo-card__image">
+              <img
+                v-if="resolveBannerUrl(item.bannerUrl)"
+                :src="resolveBannerUrl(item.bannerUrl)"
+                :alt="getLocaleData(item)?.title || item.slug"
+                loading="lazy"
+              >
+            </div>
+            <div class="promo-card__body">
+              <template v-if="getLocaleData(item)">
+                <div v-if="getLocaleData(item)!.badge" class="promo-card__badge">{{ getLocaleData(item)!.badge }}</div>
+                <h3 class="promo-card__title">{{ getLocaleData(item)!.title }}</h3>
+                <p v-if="getLocaleData(item)!.description" class="promo-card__text">{{ getLocaleData(item)!.description }}</p>
+                <span v-if="getLocaleData(item)!.ctaText" class="promo-card__cta">{{ getLocaleData(item)!.ctaText }}</span>
+              </template>
+            </div>
+          </NuxtLink>
         </div>
       </section>
 
@@ -247,6 +279,79 @@ const promoToc = computed<TocItem[]>(() => {
 .dpage__heroImage--compact img {
   object-fit: cover;
   object-position: center;
+}
+
+.dpage__news {
+  margin-bottom: 32px;
+}
+
+.dpage__newsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.promo-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  text-decoration: none;
+  color: inherit;
+}
+
+.promo-card__image {
+  height: 140px;
+  background: #f0f4ff;
+  overflow: hidden;
+}
+
+.promo-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promo-card__body {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.promo-card__badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ff6a00;
+}
+
+.promo-card__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #000;
+}
+
+.promo-card__text {
+  margin: 0;
+  font-size: 13px;
+  color: #333;
+}
+
+.promo-card__cta {
+  margin-top: 8px;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #ff6a00;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .dpage__body {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
 
+const SLUG_PREFIX = 'promo-news-'
+
 type LocaleEntry = { code: string; name: string }
 type LocaleContent = {
   title: string
@@ -19,9 +21,7 @@ const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages
 const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
 const newsPages = computed(() =>
-  (pages.value || []).filter(p =>
-    !p.slug.startsWith('_') && p.slug !== 'promo-code' && !p.slug.startsWith('promo-news-'),
-  ),
+  (pages.value || []).filter(p => p.slug.startsWith(SLUG_PREFIX)),
 )
 
 const availableLocales = computed(() => localesData.value?.locales || [{ code: 'en', name: 'English' }])
@@ -46,7 +46,7 @@ const form = reactive({
 function startCreate() {
   isEditing.value = false
   initialSlug.value = null
-  form.slug = ''
+  form.slug = SLUG_PREFIX
   form.bannerUrl = ''
   resetLocaleFields()
   addBanner.value = false
@@ -90,11 +90,16 @@ async function submitForm() {
   try {
     saving.value = true
     errorMessage.value = ''
+    const slug = form.slug.trim()
+    if (!slug.startsWith(SLUG_PREFIX)) {
+      errorMessage.value = `Slug должен начинаться с "${SLUG_PREFIX}"`
+      return
+    }
     const method = isEditing.value ? 'PUT' : 'POST'
     await $fetch('/api/admin/pages', {
       method,
       body: {
-        slug: form.slug.trim(),
+        slug,
         bannerUrl: addBanner.value ? form.bannerUrl.trim() : '',
         locale: activeLocale.value,
         title: form.title.trim(),
@@ -118,7 +123,7 @@ async function submitForm() {
 }
 
 async function remove(slug: string) {
-  if (!confirm(`Удалить страницу "${slug}"?`)) return
+  if (!confirm(`Удалить новость "${slug}"?`)) return
   try {
     await $fetch('/api/admin/pages', { method: 'DELETE', body: { slug } })
     await refresh()
@@ -138,7 +143,7 @@ function getPageTitle(page: PageItem) {
     <div class="ap__columns">
       <div class="ap__col ap__col--list">
         <div class="ap__listHead">
-          <h2 class="ap__listTitle">News</h2>
+          <h2 class="ap__listTitle">News (Promo Code)</h2>
           <button type="button" class="ap__btn ap__btn--primary" @click="startCreate">
             Создать новость
           </button>
@@ -177,6 +182,9 @@ function getPageTitle(page: PageItem) {
         <h2 class="ap__formTitle">
           {{ isEditing ? 'Редактирование новости' : 'Новая новость' }}
         </h2>
+        <p class="ap__hint ap__hint--info">
+          Slug должен начинаться с <code>{{ SLUG_PREFIX }}</code>
+        </p>
 
         <form class="ap__form" @submit.prevent="submitForm">
           <label class="ap__field">
@@ -185,7 +193,7 @@ function getPageTitle(page: PageItem) {
               v-model="form.slug"
               type="text"
               class="ap__input"
-              placeholder="пример: news-1"
+              :placeholder="`${SLUG_PREFIX}название`"
               :disabled="isEditing"
               required
             >
@@ -197,7 +205,7 @@ function getPageTitle(page: PageItem) {
           </label>
 
           <label v-if="addBanner" class="ap__field">
-            <span class="ap__label">URL баннера (общий для всех языков)</span>
+            <span class="ap__label">URL баннера</span>
             <input
               v-model="form.bannerUrl"
               type="text"
@@ -228,18 +236,18 @@ function getPageTitle(page: PageItem) {
           </label>
 
           <label class="ap__field">
-            <span class="ap__label">Badge (метка над заголовком)</span>
-            <input v-model="form.badge" type="text" class="ap__input" placeholder="PRAGMATIC PRIZE POOL">
+            <span class="ap__label">Badge</span>
+            <input v-model="form.badge" type="text" class="ap__input" placeholder="WELCOME OFFER">
           </label>
 
           <label class="ap__field">
-            <span class="ap__label">Краткое описание (для карточки)</span>
+            <span class="ap__label">Краткое описание</span>
             <input v-model="form.description" type="text" class="ap__input">
           </label>
 
           <label class="ap__field">
             <span class="ap__label">Текст кнопки CTA</span>
-            <input v-model="form.ctaText" type="text" class="ap__input" placeholder="Играть">
+            <input v-model="form.ctaText" type="text" class="ap__input" placeholder="Узнать больше">
           </label>
 
           <label class="ap__field">
@@ -274,23 +282,10 @@ function getPageTitle(page: PageItem) {
   gap: 12px;
 }
 
-.ap__listTitle {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 700;
-}
+.ap__listTitle { margin: 0; font-size: 15px; font-weight: 700; }
+.ap__formTitle { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
 
-.ap__formTitle {
-  margin: 0 0 12px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.ap__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
+.ap__table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
 .ap__table th,
 .ap__table td {
@@ -299,53 +294,14 @@ function getPageTitle(page: PageItem) {
   text-align: left;
 }
 
-.ap__tableActions {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
-}
-
-.ap__form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.ap__field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ap__checkboxRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.ap__checkbox {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.ap__label {
-  font-size: 13px;
-  color: #666666;
-}
-
-.ap__localeRow {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ap__localeTabs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+.ap__tableActions { display: flex; gap: 6px; justify-content: flex-end; }
+.ap__form { display: flex; flex-direction: column; gap: 12px; }
+.ap__field { display: flex; flex-direction: column; gap: 4px; }
+.ap__checkboxRow { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.ap__checkbox { width: 16px; height: 16px; cursor: pointer; }
+.ap__label { font-size: 13px; color: #666666; }
+.ap__localeRow { display: flex; flex-direction: column; gap: 6px; }
+.ap__localeTabs { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .ap__localeTab {
   padding: 4px 12px;
@@ -358,11 +314,7 @@ function getPageTitle(page: PageItem) {
   color: #333;
 }
 
-.ap__localeTab--active {
-  background: #1f6feb;
-  color: #fff;
-  border-color: #1f6feb;
-}
+.ap__localeTab--active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
 
 .ap__input,
 .ap__textarea {
@@ -384,10 +336,7 @@ function getPageTitle(page: PageItem) {
   box-shadow: 0 0 0 1px rgba(31, 111, 235, 0.15);
 }
 
-.ap__input:disabled {
-  background: #f5f5f5;
-  color: #888;
-}
+.ap__input:disabled { background: #f5f5f5; color: #888; }
 
 .ap__btn {
   border: none;
@@ -404,20 +353,12 @@ function getPageTitle(page: PageItem) {
 .ap__btn--danger { background: #dc2626; color: #fff; }
 .ap__btn--full { width: 100%; padding: 10px; font-size: 14px; }
 
-.ap__error {
-  margin: 0;
-  font-size: 13px;
-  color: #dc2626;
-}
+.ap__error { margin: 0; font-size: 13px; color: #dc2626; }
 
-.ap__hint {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #666666;
-}
+.ap__hint { margin: 8px 0 0; font-size: 13px; color: #666666; }
+.ap__hint--info { margin: 0 0 4px; }
 
 @media (max-width: 899px) {
   .ap__columns { grid-template-columns: minmax(0, 1fr); }
 }
 </style>
-
