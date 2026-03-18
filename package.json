@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "NUXT_DATA_DIR=/home/na594575/lend.dev-site.site/www PORT=3000 HOST=127.1.7.199 nuxt preview"
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",

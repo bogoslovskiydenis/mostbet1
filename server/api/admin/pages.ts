@@ -12,7 +12,7 @@ type PageItem = {
   ctaText?: string
 }
 
-const filePath = join(process.cwd(), 'app/utils/pages.json')
+const filePath = join(process.env.NUXT_DATA_DIR || process.cwd(), 'app/utils/pages.json')
 
 async function readPages(): Promise<PageItem[]> {
   const raw = await fs.readFile(filePath, 'utf-8')

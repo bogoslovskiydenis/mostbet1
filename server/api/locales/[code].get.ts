@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-const filePath = join(process.cwd(), 'server/data/locales.json')
+const filePath = join(process.env.NUXT_DATA_DIR || process.cwd(), 'server/data/locales.json')
 
 export default defineEventHandler(async (event) => {
   const code = getRouterParam(event, 'code')

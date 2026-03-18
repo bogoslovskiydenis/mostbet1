@@ -7,7 +7,7 @@ type LocalesData = {
   messages: Record<string, Record<string, string>>
 }
 
-const filePath = join(process.cwd(), 'server/data/locales.json')
+const filePath = join(process.env.NUXT_DATA_DIR || process.cwd(), 'server/data/locales.json')
 
 async function read(): Promise<LocalesData> {
   const raw = await readFile(filePath, 'utf-8')
