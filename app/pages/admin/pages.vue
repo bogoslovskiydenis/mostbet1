@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
-await navigateTo('/admin/news', { replace: true })
 
 type LocaleEntry = { code: string; name: string }
 type LocaleContent = {
@@ -16,12 +15,17 @@ type PageItem = {
   locales?: Record<string, LocaleContent>
 }
 
+const reservedSlugs = ['mostbet-pragmatic-play', '13213']
+
 const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages')
 const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
 const promoPages = computed(() =>
-  (pages.value || []).filter(p => !p.slug.startsWith('_'))
+  (pages.value || []).filter(p =>
+    !p.slug.startsWith('_') && !reservedSlugs.includes(p.slug),
+  )
 )
+
 const availableLocales = computed(() => localesData.value?.locales || [{ code: 'en', name: 'English' }])
 
 const activeLocale = ref('en')
@@ -41,16 +45,6 @@ const form = reactive({
   content: '',
 })
 
-function startCreate() {
-  isEditing.value = false
-  initialSlug.value = null
-  form.slug = ''
-  form.bannerUrl = ''
-  resetLocaleFields()
-  addBanner.value = false
-  errorMessage.value = ''
-}
-
 function resetLocaleFields() {
   form.title = ''
   form.badge = ''
@@ -66,6 +60,16 @@ function loadLocaleFields(page: PageItem, locale: string) {
   form.description = lc?.description || ''
   form.ctaText = lc?.ctaText || ''
   form.content = lc?.content || ''
+}
+
+function startCreate() {
+  isEditing.value = false
+  initialSlug.value = null
+  form.slug = ''
+  form.bannerUrl = ''
+  resetLocaleFields()
+  addBanner.value = false
+  errorMessage.value = ''
 }
 
 function startEdit(page: PageItem) {
@@ -88,11 +92,24 @@ async function submitForm() {
   try {
     saving.value = true
     errorMessage.value = ''
+
     const method = isEditing.value ? 'PUT' : 'POST'
+    const nextSlug = form.slug.trim()
+
+    if (!nextSlug) {
+      throw new Error('Slug обязателен')
+    }
+    if (nextSlug.startsWith('_')) {
+      throw new Error('Slug системных страниц запрещен')
+    }
+    if (reservedSlugs.includes(nextSlug)) {
+      throw new Error('Эта страница редактируется в разделе All you need...')
+    }
+
     await $fetch('/api/admin/pages', {
       method,
       body: {
-        slug: form.slug.trim(),
+        slug: nextSlug,
         bannerUrl: addBanner.value ? form.bannerUrl.trim() : '',
         locale: activeLocale.value,
         title: form.title.trim(),
@@ -102,14 +119,16 @@ async function submitForm() {
         content: form.content,
       },
     })
+
     await refresh()
+
     if (!isEditing.value) startCreate()
     else {
       const updated = promoPages.value.find(p => p.slug === initialSlug.value)
       if (updated) loadLocaleFields(updated, activeLocale.value)
     }
   } catch (error: any) {
-    errorMessage.value = error?.data?.statusMessage || 'Ошибка сохранения'
+    errorMessage.value = error?.data?.statusMessage || error?.message || 'Ошибка сохранения'
   } finally {
     saving.value = false
   }
@@ -136,8 +155,12 @@ function getPageTitle(page: PageItem) {
     <div class="ap__columns">
       <div class="ap__col ap__col--list">
         <div class="ap__listHead">
-          <h2 class="ap__listTitle">All you need to know about Mostbet</h2>
-          <button type="button" class="ap__btn ap__btn--primary" @click="startCreate">
+          <h2 class="ap__listTitle">Промокоды</h2>
+          <button
+            type="button"
+            class="ap__btn ap__btn--primary"
+            @click="startCreate"
+          >
             Создать страницу
           </button>
         </div>
@@ -183,7 +206,6 @@ function getPageTitle(page: PageItem) {
               v-model="form.slug"
               type="text"
               class="ap__input"
-              placeholder="пример: bonus-terms"
               :disabled="isEditing"
               required
             >
@@ -247,7 +269,11 @@ function getPageTitle(page: PageItem) {
 
           <p v-if="errorMessage" class="ap__error">{{ errorMessage }}</p>
 
-          <button type="submit" class="ap__btn ap__btn--primary ap__btn--full" :disabled="saving">
+          <button
+            type="submit"
+            class="ap__btn ap__btn--primary ap__btn--full"
+            :disabled="saving || !form.slug.trim()"
+          >
             {{ saving ? 'Сохранение...' : `Сохранить (${activeLocale.toUpperCase()})` }}
           </button>
         </form>
@@ -418,3 +444,4 @@ function getPageTitle(page: PageItem) {
   .ap__columns { grid-template-columns: minmax(0, 1fr); }
 }
 </style>
+

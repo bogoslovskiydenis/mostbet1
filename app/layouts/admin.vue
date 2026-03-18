@@ -1,4 +1,10 @@
 <script setup lang="ts">
+const route = useRoute()
+
+const isHomeSectionActive = computed(
+  () => route.path.startsWith('/admin/home') || route.path.startsWith('/admin/news'),
+)
+
 function logout() {
   try {
     navigator.sendBeacon?.('/api/admin/logout')
@@ -24,12 +30,19 @@ function logout() {
   <div class="admin-layout">
     <aside class="admin-layout__sidebar">
       <nav class="admin-layout__nav">
-        <NuxtLink to="/admin" class="admin-layout__link">
-          Панель
-        </NuxtLink>
-        <NuxtLink to="/admin/home" class="admin-layout__link">
+        <div class="admin-layout__section">
+          <NuxtLink
+            to="/admin/home"
+            class="admin-layout__link"
+            :class="{ 'admin-layout__link--active': isHomeSectionActive }"
+          >
           Главная
-        </NuxtLink>
+          </NuxtLink>
+          <NuxtLink to="/admin/news" class="admin-layout__sublink">
+            News
+          </NuxtLink>
+        </div>
+
         <NuxtLink to="/admin/navbar" class="admin-layout__link">
           Navbar
         </NuxtLink>
@@ -71,6 +84,12 @@ function logout() {
   gap: 8px;
 }
 
+.admin-layout__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .admin-layout__link {
   display: block;
   padding: 8px 10px;
@@ -81,6 +100,23 @@ function logout() {
 }
 
 .admin-layout__link.router-link-active {
+  background: #1f3658;
+}
+
+.admin-layout__link--active {
+  background: #1f3658;
+}
+
+.admin-layout__sublink {
+  display: block;
+  padding: 8px 10px 8px 26px;
+  border-radius: 6px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.admin-layout__sublink.router-link-active {
   background: #1f3658;
 }
 

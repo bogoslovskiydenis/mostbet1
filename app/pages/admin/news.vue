@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
-await navigateTo('/admin/news', { replace: true })
 
 type LocaleEntry = { code: string; name: string }
 type LocaleContent = {
@@ -19,9 +18,10 @@ type PageItem = {
 const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages')
 const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
-const promoPages = computed(() =>
-  (pages.value || []).filter(p => !p.slug.startsWith('_'))
+const newsPages = computed(() =>
+  (pages.value || []).filter(p => !p.slug.startsWith('_')),
 )
+
 const availableLocales = computed(() => localesData.value?.locales || [{ code: 'en', name: 'English' }])
 
 const activeLocale = ref('en')
@@ -80,7 +80,7 @@ function startEdit(page: PageItem) {
 
 watch(activeLocale, () => {
   if (!isEditing.value) return
-  const page = promoPages.value.find(p => p.slug === initialSlug.value)
+  const page = newsPages.value.find(p => p.slug === initialSlug.value)
   if (page) loadLocaleFields(page, activeLocale.value)
 })
 
@@ -105,7 +105,7 @@ async function submitForm() {
     await refresh()
     if (!isEditing.value) startCreate()
     else {
-      const updated = promoPages.value.find(p => p.slug === initialSlug.value)
+      const updated = newsPages.value.find(p => p.slug === initialSlug.value)
       if (updated) loadLocaleFields(updated, activeLocale.value)
     }
   } catch (error: any) {
@@ -136,15 +136,15 @@ function getPageTitle(page: PageItem) {
     <div class="ap__columns">
       <div class="ap__col ap__col--list">
         <div class="ap__listHead">
-          <h2 class="ap__listTitle">All you need to know about Mostbet</h2>
+          <h2 class="ap__listTitle">News</h2>
           <button type="button" class="ap__btn ap__btn--primary" @click="startCreate">
-            Создать страницу
+            Создать новость
           </button>
         </div>
 
         <div v-if="pending" class="ap__hint">Загрузка...</div>
 
-        <table v-if="promoPages.length" class="ap__table">
+        <table v-if="newsPages.length" class="ap__table">
           <thead>
             <tr>
               <th>Slug</th>
@@ -153,7 +153,7 @@ function getPageTitle(page: PageItem) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="page in promoPages" :key="page.slug">
+            <tr v-for="page in newsPages" :key="page.slug">
               <td><code>{{ page.slug }}</code></td>
               <td>{{ getPageTitle(page) }}</td>
               <td class="ap__tableActions">
@@ -168,12 +168,12 @@ function getPageTitle(page: PageItem) {
           </tbody>
         </table>
 
-        <p v-else-if="!pending" class="ap__hint">Страниц пока нет.</p>
+        <p v-else-if="!pending" class="ap__hint">Новостей пока нет.</p>
       </div>
 
       <div class="ap__col ap__col--form">
         <h2 class="ap__formTitle">
-          {{ isEditing ? 'Редактирование страницы' : 'Новая страница' }}
+          {{ isEditing ? 'Редактирование новости' : 'Новая новость' }}
         </h2>
 
         <form class="ap__form" @submit.prevent="submitForm">
@@ -183,7 +183,7 @@ function getPageTitle(page: PageItem) {
               v-model="form.slug"
               type="text"
               class="ap__input"
-              placeholder="пример: bonus-terms"
+              placeholder="пример: news-1"
               :disabled="isEditing"
               required
             >
@@ -418,3 +418,4 @@ function getPageTitle(page: PageItem) {
   .ap__columns { grid-template-columns: minmax(0, 1fr); }
 }
 </style>
+
