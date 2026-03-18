@@ -107,6 +107,52 @@ const promoToc = computed<TocItem[]>(() => {
   }
   return out
 })
+
+const activeId = ref('')
+
+let observer: IntersectionObserver | null = null
+
+function setupObserver() {
+  observer?.disconnect()
+  if (!promoToc.value.length) return
+
+  const ids = promoToc.value.map(t => t.id)
+  const headings = ids
+    .map(id => document.getElementById(id))
+    .filter(Boolean) as HTMLElement[]
+
+  if (!headings.length) return
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter(e => e.isIntersecting)
+      if (visible.length) {
+        activeId.value = visible[0].target.id
+      }
+    },
+    { rootMargin: '-10% 0px -80% 0px', threshold: 0 },
+  )
+
+  headings.forEach(h => observer!.observe(h))
+}
+
+function tocClick(id: string) {
+  activeId.value = id
+}
+
+watch(promoToc, async () => {
+  await nextTick()
+  setupObserver()
+}, { immediate: false })
+
+onMounted(async () => {
+  await nextTick()
+  setupObserver()
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 </script>
 
 <template>
@@ -138,51 +184,47 @@ const promoToc = computed<TocItem[]>(() => {
         </div>
       </section>
 
-      <section v-if="isPromoCodePage && newsPages.length" class="dpage__news">
-        <div class="dpage__newsList">
-          <NuxtLink
-            v-for="item in newsPages"
-            :key="item.slug"
-            class="promo-card"
-            :to="`/promo-code/${item.slug}`"
-          >
-            <div class="promo-card__image">
-              <img
-                v-if="resolveBannerUrl(item.bannerUrl)"
-                :src="resolveBannerUrl(item.bannerUrl)"
-                :alt="getLocaleData(item)?.title || item.slug"
-                loading="lazy"
-              >
-            </div>
-            <div class="promo-card__body">
-              <template v-if="getLocaleData(item)">
-                <div v-if="getLocaleData(item)!.badge" class="promo-card__badge">{{ getLocaleData(item)!.badge }}</div>
-                <h3 class="promo-card__title">{{ getLocaleData(item)!.title }}</h3>
-                <p v-if="getLocaleData(item)!.description" class="promo-card__text">{{ getLocaleData(item)!.description }}</p>
-                <span v-if="getLocaleData(item)!.ctaText" class="promo-card__cta">{{ getLocaleData(item)!.ctaText }}</span>
-              </template>
-            </div>
-          </NuxtLink>
-        </div>
-      </section>
-
       <article v-if="!isPromoCodePage" class="dpage__body" v-html="localePage.content" />
 
       <section v-else class="promo">
         <div class="promo__grid">
           <article class="promo__body" v-html="promoHtml" />
 
-          <aside v-if="promoToc.length" class="promo__aside">
-            <nav class="promoNav" aria-label="Promo navigation">
+          <aside class="promo__aside">
+            <nav v-if="promoToc.length" class="promoNav" aria-label="Promo navigation">
               <a
                 v-for="item in promoToc"
                 :key="item.id"
                 class="promoNav__item"
+                :class="{ 'promoNav__item--active': activeId === item.id }"
                 :href="`#${item.id}`"
+                @click="tocClick(item.id)"
               >
                 {{ item.label }}
               </a>
             </nav>
+
+            <div v-if="newsPages.length" class="promoNews">
+              <p class="promoNews__title">Related Articles</p>
+              <NuxtLink
+                v-for="item in newsPages"
+                :key="item.slug"
+                class="promoNews__card"
+                :to="`/promo-code/${item.slug}`"
+              >
+                <div v-if="resolveBannerUrl(item.bannerUrl)" class="promoNews__img">
+                  <img
+                    :src="resolveBannerUrl(item.bannerUrl)"
+                    :alt="getLocaleData(item)?.title || item.slug"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="promoNews__body">
+                  <div v-if="getLocaleData(item)?.badge" class="promoNews__badge">{{ getLocaleData(item)!.badge }}</div>
+                  <span class="promoNews__name">{{ getLocaleData(item)?.title || item.slug }}</span>
+                </div>
+              </NuxtLink>
+            </div>
           </aside>
         </div>
       </section>
@@ -281,14 +323,71 @@ const promoToc = computed<TocItem[]>(() => {
   object-position: center;
 }
 
-.dpage__news {
-  margin-bottom: 32px;
+.promoNews {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.dpage__newsList {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+.promoNews__title {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 10px;
+}
+
+.promoNews__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.18s;
+}
+
+.promoNews__card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.promoNews__img {
+  height: 100px;
+  overflow: hidden;
+}
+
+.promoNews__img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promoNews__body {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.promoNews__badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #ff6a00;
+}
+
+.promoNews__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
 }
 
 .promo-card {
@@ -489,9 +588,22 @@ const promoToc = computed<TocItem[]>(() => {
   margin: 12px 0 18px;
 }
 
-.promoNav {
+.promo__aside {
   position: sticky;
   top: 92px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.promo__aside::-webkit-scrollbar {
+  display: none;
+}
+
+.promoNav {
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255, 255, 255, 0.04);
@@ -499,6 +611,7 @@ const promoToc = computed<TocItem[]>(() => {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .promoNav__item {
@@ -513,6 +626,13 @@ const promoToc = computed<TocItem[]>(() => {
 .promoNav__item:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.06);
+}
+
+.promoNav__item--active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 2px solid #ff6a00;
+  padding-left: 8px;
 }
 
 @media (max-width: 899px) {
