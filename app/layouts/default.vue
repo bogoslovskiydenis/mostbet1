@@ -9,6 +9,15 @@ type FooterSettings = {
   copyrightText?: string
   legalText?: string
 }
+type NavbarLink = {
+  label: string
+  href: string
+}
+type NavbarLocaleSettings = {
+  links?: NavbarLink[]
+  signInLabel?: string
+  signInHref?: string
+}
 
 type PageItem = {
   slug: string
@@ -32,6 +41,9 @@ type SeoSettings = {
 const { data: footerPage } = useFetch<PageItem | null>('/api/admin/pages', {
   query: { slug: '_sys_footer' },
 })
+const { data: navbarPage } = useFetch<PageItem | null>('/api/admin/pages', {
+  query: { slug: '_sys_navbar' },
+})
 const { data: seoPage } = useFetch<PageItem | null>('/api/admin/pages', {
   query: { slug: '_sys_seo' },
 })
@@ -51,6 +63,37 @@ const footerSettings = computed<FooterSettings>(() => {
 const footerBrandText = computed(() => footerSettings.value.brandText || 'MOSTBET')
 const footerCopyright = computed(() => footerSettings.value.copyrightText || 'Copyright © 2026 MostBet.')
 const footerLegal = computed(() => footerSettings.value.legalText || th('home.footer.legal'))
+const { locale } = useAppLocale()
+
+const navbarSettings = computed<Partial<Record<string, NavbarLocaleSettings>>>(() => {
+  const raw = navbarPage.value?.content || ''
+  if (!raw) return {}
+  try {
+    return JSON.parse(raw) as Partial<Record<string, NavbarLocaleSettings>>
+  } catch {
+    return {}
+  }
+})
+
+const footerNavLinks = computed<NavbarLink[]>(() => {
+  const current = navbarSettings.value[locale.value] || {}
+  if (current.links?.length) return current.links
+  return [
+    { label: th('header.register'), href: '#register' },
+    { label: th('header.promoCode'), href: '#promo-code' },
+    { label: th('header.app'), href: '#app' },
+    { label: th('header.review'), href: '#review' },
+    { label: th('header.payments'), href: '#payments' },
+  ]
+})
+const footerSignInLabel = computed(() => {
+  const current = navbarSettings.value[locale.value] || {}
+  return current.signInLabel || th('header.signIn')
+})
+const footerSignInHref = computed(() => {
+  const current = navbarSettings.value[locale.value] || {}
+  return current.signInHref || '#sign-in'
+})
 
 const seoSettings = computed<SeoSettings>(() => {
   const raw = seoPage.value?.content || ''
@@ -119,23 +162,16 @@ useHead(() => {
           </p>
         </div>
         <nav class="footer__nav" aria-label="Footer navigation">
-          <a href="#register" class="footer__link">
-            {{ th('header.register') }}
+          <a
+            v-for="item in footerNavLinks"
+            :key="item.href + item.label"
+            :href="item.href"
+            class="footer__link"
+          >
+            {{ item.label }}
           </a>
-          <a href="#promo-code" class="footer__link">
-            {{ th('header.promoCode') }}
-          </a>
-          <a href="#app" class="footer__link">
-            {{ th('header.app') }}
-          </a>
-          <a href="#review" class="footer__link">
-            {{ th('header.review') }}
-          </a>
-          <a href="#payments" class="footer__link">
-            {{ th('header.payments') }}
-          </a>
-          <a href="#sign-in" class="footer__link footer__link--accent">
-            {{ th('header.signIn') }}
+          <a :href="footerSignInHref" class="footer__link footer__link--accent">
+            {{ footerSignInLabel }}
           </a>
         </nav>
       </div>

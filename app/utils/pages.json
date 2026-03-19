@@ -63,7 +63,7 @@
   {
     "slug": "_sys_navbar",
     "title": "Navbar",
-    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"/promo-code\"\n      },\n      {\n        \"label\": \"Ревью\",\n        \"href\": \"/review\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"/promo-code\"\n      },\n      {\n        \"label\": \"Review\",\n        \"href\": \"/review\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  }\n}"
+    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"/promo-code\"\n      },\n      {\n        \"label\": \"Ревью\",\n        \"href\": \"/review\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"Brend\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"/promo-code\"\n      },\n      {\n        \"label\": \"Review\",\n        \"href\": \"/review\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  }\n}"
   },
   {
     "slug": "13213",
@@ -90,5 +90,10 @@
         "ctaText": ""
       }
     }
+  },
+  {
+    "slug": "_sys_footer",
+    "title": "Footer",
+    "content": "{\n  \"brandText\": \"Brend\",\n  \"copyrightText\": \"2060\",\n  \"legalText\": \"LEGAL\"\n}"
   }
 ]
