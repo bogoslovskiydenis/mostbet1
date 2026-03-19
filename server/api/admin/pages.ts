@@ -14,6 +14,7 @@ export type PageItem = {
   slug: string
   // content pages: per-locale data
   bannerUrl?: string
+  newsPlacement?: 'home' | 'promocode' | 'review'
   locales?: Record<string, LocaleContent>
   // system pages (_sys_*): legacy flat fields
   title?: string
@@ -23,6 +24,7 @@ export type PageItem = {
 type PostBody = {
   slug: string
   bannerUrl?: string
+  newsPlacement?: 'home' | 'promocode' | 'review'
   locale?: string
   title?: string
   badge?: string
@@ -73,6 +75,7 @@ export default defineEventHandler(async (event) => {
 
     // locale-based content page
     if (body.locale) {
+      const inferredNewsPlacement = body.newsPlacement || (body.slug.startsWith('promo-news-') ? 'promocode' : undefined)
       const localeData: LocaleContent = {
         title: body.title ?? '',
         content: body.content ?? '',
@@ -83,10 +86,19 @@ export default defineEventHandler(async (event) => {
 
       let page: PageItem
       if (index === -1) {
-        page = { slug: body.slug, bannerUrl: body.bannerUrl ?? '', locales: { [body.locale]: localeData } }
+        page = {
+          slug: body.slug,
+          bannerUrl: body.bannerUrl ?? '',
+          ...(inferredNewsPlacement ? { newsPlacement: inferredNewsPlacement } : {}),
+          locales: { [body.locale]: localeData },
+        }
         pages.push(page)
       } else {
-        page = { ...pages[index], bannerUrl: body.bannerUrl ?? pages[index].bannerUrl ?? '' }
+        page = {
+          ...pages[index],
+          bannerUrl: body.bannerUrl ?? pages[index].bannerUrl ?? '',
+          ...(inferredNewsPlacement ? { newsPlacement: inferredNewsPlacement } : {}),
+        }
         page.locales = { ...page.locales, [body.locale]: localeData }
         pages[index] = page
       }

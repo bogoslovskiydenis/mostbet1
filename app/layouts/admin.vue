@@ -6,7 +6,7 @@ const isHomeSectionActive = computed(
 )
 
 const isPromoSectionActive = computed(
-  () => route.path.startsWith('/admin/pages') || route.path.startsWith('/admin/promo-news'),
+  () => route.path.startsWith('/admin/pages'),
 )
 
 const isReviewSectionActive = computed(
@@ -58,9 +58,6 @@ function logout() {
             :class="{ 'admin-layout__link--active': isPromoSectionActive }"
           >
             Promo Code
-          </NuxtLink>
-          <NuxtLink to="/admin/promo-news" class="admin-layout__sublink">
-            News
           </NuxtLink>
         </div>
 

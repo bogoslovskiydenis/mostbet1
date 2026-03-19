@@ -23,6 +23,7 @@ type LocaleContent = {
 type PageItem = {
   slug: string
   bannerUrl?: string
+  newsPlacement?: 'home' | 'promocode' | 'review'
   locales?: Record<string, LocaleContent>
 }
 
@@ -67,7 +68,10 @@ const reviewLocalePage = computed<LocaleContent | null>(() => {
 })
 
 const newsPages = computed(() =>
-  (allPages.value || []).filter(p => p.slug.startsWith('promo-news-')),
+  (allPages.value || []).filter(p => p.newsPlacement === 'promocode' || (!p.newsPlacement && p.slug.startsWith('promo-news-'))),
+)
+const reviewNewsPages = computed(() =>
+  (allPages.value || []).filter(p => p.newsPlacement === 'review'),
 )
 
 function resolveBannerUrl(url?: string) {
@@ -302,6 +306,28 @@ onUnmounted(() => {
 
             <p class="reviewCard__terms">{{ item.terms }}</p>
           </article>
+
+          <div v-if="reviewNewsPages.length" class="reviewNews">
+            <p class="reviewNews__title">Related Articles</p>
+            <NuxtLink
+              v-for="item in reviewNewsPages"
+              :key="item.slug"
+              class="reviewNews__card"
+              :to="`/${item.slug}`"
+            >
+              <div v-if="resolveBannerUrl(item.bannerUrl)" class="reviewNews__img">
+                <img
+                  :src="resolveBannerUrl(item.bannerUrl)"
+                  :alt="getLocaleData(item)?.title || item.slug"
+                  loading="lazy"
+                >
+              </div>
+              <div class="reviewNews__body">
+                <div v-if="getLocaleData(item)?.badge" class="reviewNews__badge">{{ getLocaleData(item)!.badge }}</div>
+                <span class="reviewNews__name">{{ getLocaleData(item)?.title || item.slug }}</span>
+              </div>
+            </NuxtLink>
+          </div>
         </div>
       </section>
     </template>
@@ -600,6 +626,66 @@ onUnmounted(() => {
   color: #8a9098;
   font-size: 11px;
   line-height: 1.3;
+}
+
+.reviewNews {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+
+.reviewNews__title {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.reviewNews__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e2e6ec;
+  text-decoration: none;
+  color: inherit;
+}
+
+.reviewNews__img {
+  height: 140px;
+  overflow: hidden;
+}
+
+.reviewNews__img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reviewNews__body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.reviewNews__badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #ff6a00;
+}
+
+.reviewNews__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  line-height: 1.4;
 }
 
 @media (max-width: 1199px) {

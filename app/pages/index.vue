@@ -15,6 +15,7 @@ type LocaleContent = {
 type DynamicPage = {
   slug: string
   bannerUrl?: string
+  newsPlacement?: 'home' | 'promocode' | 'review'
   locales?: Record<string, LocaleContent>
 }
 
@@ -23,7 +24,13 @@ const { locale } = useAppLocale()
 const { data: allPages } = useFetch<DynamicPage[]>('/api/admin/pages')
 const dynamicPages = computed(() =>
   (allPages.value || []).filter(p =>
-    !p.slug.startsWith('_') && p.slug !== 'promo-code' && !p.slug.startsWith('promo-news-'),
+    !p.slug.startsWith('_')
+    && p.slug !== 'promo-code'
+    && p.slug !== 'review'
+    && (
+      p.newsPlacement === 'home'
+      || (!p.newsPlacement && !p.slug.startsWith('promo-news-'))
+    ),
   ),
 )
 
@@ -362,7 +369,7 @@ const { th } = useLocaleMessages()
         v-for="page in dynamicPages"
         :key="page.slug"
         class="promo-card"
-        :to="`/promo-code/${page.slug}`"
+        :to="`/${page.slug}`"
       >
         <div class="promo-card__image">
           <img

@@ -12,15 +12,19 @@ type LocaleContent = {
 type PageItem = {
   slug: string
   bannerUrl?: string
+  newsPlacement?: 'home' | 'promocode' | 'review'
   locales?: Record<string, LocaleContent>
 }
+type NewsPlacement = 'home' | 'promocode' | 'review'
 
 const { data: pages, refresh, pending } = useFetch<PageItem[]>('/api/admin/pages')
 const { data: localesData } = useFetch<{ locales: LocaleEntry[] }>('/api/admin/locales')
 
 const newsPages = computed(() =>
   (pages.value || []).filter(p =>
-    !p.slug.startsWith('_') && p.slug !== 'promo-code' && !p.slug.startsWith('promo-news-'),
+    !p.slug.startsWith('_')
+    && p.slug !== 'promo-code'
+    && p.slug !== 'review'
   ),
 )
 
@@ -36,6 +40,7 @@ const addBanner = ref(false)
 const form = reactive({
   slug: '',
   bannerUrl: '',
+  newsPlacement: 'home' as NewsPlacement,
   title: '',
   badge: '',
   description: '',
@@ -48,6 +53,7 @@ function startCreate() {
   initialSlug.value = null
   form.slug = ''
   form.bannerUrl = ''
+  form.newsPlacement = 'home'
   resetLocaleFields()
   addBanner.value = false
   errorMessage.value = ''
@@ -75,6 +81,7 @@ function startEdit(page: PageItem) {
   initialSlug.value = page.slug
   form.slug = page.slug
   form.bannerUrl = page.bannerUrl || ''
+  form.newsPlacement = page.newsPlacement || (page.slug.startsWith('promo-news-') ? 'promocode' : 'home')
   addBanner.value = !!page.bannerUrl
   loadLocaleFields(page, activeLocale.value)
   errorMessage.value = ''
@@ -90,12 +97,17 @@ async function submitForm() {
   try {
     saving.value = true
     errorMessage.value = ''
+    if (form.slug.trim() === 'review') {
+      errorMessage.value = 'Slug "review" редактируется только в разделе Review'
+      return
+    }
     const method = isEditing.value ? 'PUT' : 'POST'
     await $fetch('/api/admin/pages', {
       method,
       body: {
         slug: form.slug.trim(),
         bannerUrl: addBanner.value ? form.bannerUrl.trim() : '',
+        newsPlacement: form.newsPlacement,
         locale: activeLocale.value,
         title: form.title.trim(),
         badge: form.badge.trim(),
@@ -189,6 +201,15 @@ function getPageTitle(page: PageItem) {
               :disabled="isEditing"
               required
             >
+          </label>
+
+          <label class="ap__field">
+            <span class="ap__label">Куда публиковать</span>
+            <select v-model="form.newsPlacement" class="ap__input">
+              <option value="home">Главная</option>
+              <option value="promocode">Промокод</option>
+              <option value="review">Review</option>
+            </select>
           </label>
 
           <label class="ap__checkboxRow">
