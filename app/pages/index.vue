@@ -46,6 +46,24 @@ function resolveBannerUrl(url?: string) {
 }
 
 const { th } = useLocaleMessages()
+
+function msgOrFallback(key: string, fallback: string) {
+  const value = th(key)
+  if (!value || value === key) return fallback
+  return value
+}
+
+const heroImage = computed(() => msgOrFallback('home.media.heroImage', banner))
+const heroLink = computed(() => msgOrFallback('home.media.heroLink', '#register'))
+
+const registrationImage = computed(() => msgOrFallback('home.media.registrationImage', bannerReg))
+const registrationLink = computed(() => msgOrFallback('home.media.registrationLink', '#register'))
+
+const promoImage = computed(() => msgOrFallback('home.media.promoImage', bannerPromo))
+const promoLink = computed(() => msgOrFallback('home.media.promoLink', '#promo-code'))
+
+const loginImage = computed(() => msgOrFallback('home.media.loginImage', bannerLogin))
+const loginLink = computed(() => msgOrFallback('home.media.loginLink', '#sign-in'))
 </script>
 
 <template>
@@ -60,12 +78,14 @@ const { th } = useLocaleMessages()
         </p>
       </div>
       <div class="hero__media">
-        <img
-            :src="banner"
-            alt="MostBet"
-            loading="lazy"
-            class="hero__image"
-        >
+        <a :href="heroLink">
+          <img
+              :src="heroImage"
+              alt="MostBet"
+              loading="lazy"
+              class="hero__image"
+          >
+        </a>
       </div>
     </div>
     <div class="hero__actions">
@@ -99,12 +119,14 @@ const { th } = useLocaleMessages()
   <section class="info">
     <article id="register" class="info-card">
       <div class="info-card__imageWrapper">
-        <img
-            :src="bannerReg"
-            alt="MostBet Registration"
-            loading="lazy"
-            class="info-card__image"
-        >
+        <a :href="registrationLink">
+          <img
+              :src="registrationImage"
+              alt="MostBet Registration"
+              loading="lazy"
+              class="info-card__image"
+          >
+        </a>
       </div>
       <div class="info-card__content">
         <h2 class="info-card__title">{{ th('home.info.registration.title') }}</h2>
@@ -125,12 +147,14 @@ const { th } = useLocaleMessages()
 
     <article id="promo-code" class="info-card">
       <div class="info-card__imageWrapper">
-        <img
-            :src="bannerPromo"
-            alt="MostBet Promo Code"
-            loading="lazy"
-            class="info-card__image"
-        >
+        <a :href="promoLink">
+          <img
+              :src="promoImage"
+              alt="MostBet Promo Code"
+              loading="lazy"
+              class="info-card__image"
+          >
+        </a>
       </div>
       <div class="info-card__content">
         <h2 class="info-card__title">{{ th('home.info.promo.title') }}</h2>
@@ -151,12 +175,14 @@ const { th } = useLocaleMessages()
 
     <article id="sign-in" class="info-card">
       <div class="info-card__imageWrapper">
-        <img
-            :src="bannerLogin"
-            alt="MostBet Login"
-            loading="lazy"
-            class="info-card__image"
-        >
+        <a :href="loginLink">
+          <img
+              :src="loginImage"
+              alt="MostBet Login"
+              loading="lazy"
+              class="info-card__image"
+          >
+        </a>
       </div>
       <div class="info-card__content">
         <h2 class="info-card__title">{{ th('home.info.login.title') }}</h2>

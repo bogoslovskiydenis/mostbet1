@@ -24,6 +24,8 @@ const groups = [
     fields: [
       { key: 'hero.title', label: 'Title', multiline: false },
       { key: 'hero.subtitle', label: 'Subtitle', multiline: true },
+      { key: 'home.media.heroImage', label: 'Hero image URL', multiline: false },
+      { key: 'home.media.heroLink', label: 'Hero image link', multiline: false },
     ],
   },
   {
@@ -33,6 +35,8 @@ const groups = [
       { key: 'home.info.registration.p1', label: 'P1', multiline: true },
       { key: 'home.info.registration.p2', label: 'P2', multiline: true },
       { key: 'home.info.registration.p3', label: 'P3', multiline: true },
+      { key: 'home.media.registrationImage', label: 'Registration image URL', multiline: false },
+      { key: 'home.media.registrationLink', label: 'Registration image link', multiline: false },
     ],
   },
   {
@@ -42,6 +46,8 @@ const groups = [
       { key: 'home.info.promo.p1', label: 'P1', multiline: true },
       { key: 'home.info.promo.p2', label: 'P2', multiline: true },
       { key: 'home.info.promo.p3', label: 'P3', multiline: true },
+      { key: 'home.media.promoImage', label: 'Promo image URL', multiline: false },
+      { key: 'home.media.promoLink', label: 'Promo image link', multiline: false },
     ],
   },
   {
@@ -51,6 +57,8 @@ const groups = [
       { key: 'home.info.login.p1', label: 'P1', multiline: true },
       { key: 'home.info.login.p2', label: 'P2', multiline: true },
       { key: 'home.info.login.p3', label: 'P3', multiline: true },
+      { key: 'home.media.loginImage', label: 'Login image URL', multiline: false },
+      { key: 'home.media.loginLink', label: 'Login image link', multiline: false },
     ],
   },
   {
