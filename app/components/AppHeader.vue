@@ -73,7 +73,14 @@ const navLinks = computed(() => {
 })
 
 const signInLabel = computed(() => currentNavbar.value.signInLabel || th('header.signIn'))
-const signInHref = computed(() => currentNavbar.value.signInHref || '#sign-in')
+const signInHref = computed(() => {
+  const raw = currentNavbar.value.signInHref || '#sign-in'
+  if (!raw.startsWith('#') && !raw.startsWith('/') && !raw.startsWith('http')) {
+    return `https://${raw}`
+  }
+  return raw
+})
+const signInExternal = computed(() => signInHref.value.startsWith('http'))
 
 const burgerLabel = computed(() => (isOpen.value ? 'Close menu' : 'Open menu'))
 const currentLangLabel = computed(() => {
@@ -119,7 +126,12 @@ const currentLangLabel = computed(() => {
         <button class="header__lang" type="button" aria-label="Language" @click="toggleLang">
           <span class="header__langText">{{ currentLangLabel }}</span>
         </button>
-        <a class="header__signin" :href="signInHref">{{ signInLabel }}</a>
+        <a
+          class="header__signin"
+          :href="signInHref"
+          :target="signInExternal ? '_blank' : undefined"
+          :rel="signInExternal ? 'noopener noreferrer' : undefined"
+        >{{ signInLabel }}</a>
 
         <div v-if="isLangOpen" class="langDropdown">
           <div class="langDropdown__header">
@@ -157,7 +169,13 @@ const currentLangLabel = computed(() => {
         >
           {{ item.label }}
         </a>
-        <a class="header__mobileLink header__mobileLink--accent" :href="signInHref" @click="close">
+        <a
+          class="header__mobileLink header__mobileLink--accent"
+          :href="signInHref"
+          :target="signInExternal ? '_blank' : undefined"
+          :rel="signInExternal ? 'noopener noreferrer' : undefined"
+          @click="close"
+        >
           {{ signInLabel }}
         </a>
       </nav>
@@ -232,7 +250,6 @@ const currentLangLabel = computed(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 140px;
 }
 
 .header__brandText {

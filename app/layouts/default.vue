@@ -92,7 +92,11 @@ const footerSignInLabel = computed(() => {
 })
 const footerSignInHref = computed(() => {
   const current = navbarSettings.value[locale.value] || {}
-  return current.signInHref || '#sign-in'
+  const raw = current.signInHref || '#sign-in'
+  if (!raw.startsWith('#') && !raw.startsWith('/') && !raw.startsWith('http')) {
+    return `https://${raw}`
+  }
+  return raw
 })
 
 const seoSettings = computed<SeoSettings>(() => {
@@ -170,7 +174,12 @@ useHead(() => {
           >
             {{ item.label }}
           </a>
-          <a :href="footerSignInHref" class="footer__link footer__link--accent">
+          <a
+            :href="footerSignInHref"
+            class="footer__link footer__link--accent"
+            :target="footerSignInHref.startsWith('http') ? '_blank' : undefined"
+            :rel="footerSignInHref.startsWith('http') ? 'noopener noreferrer' : undefined"
+          >
             {{ footerSignInLabel }}
           </a>
         </nav>

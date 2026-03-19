@@ -7,8 +7,23 @@ type LocalesData = {
   locales: { code: string; name: string }[]
   messages: Record<string, Record<string, string>>
 }
+type PageItem = {
+  slug: string
+  title?: string
+  content?: string
+}
+type ExtraFaqItem = {
+  question: string
+  answer: string
+}
 
 const { data: localesData, refresh } = useFetch<LocalesData>('/api/admin/locales')
+const { data: faqPage, refresh: refreshFaq } = useFetch<PageItem | null>('/api/admin/pages', {
+  query: { slug: '_sys_home_faq' },
+})
+const { data: htmlPage, refresh: refreshHtml } = useFetch<PageItem | null>('/api/admin/pages', {
+  query: { slug: '_sys_home_html' },
+})
 
 const activeLocale = ref('en')
 
@@ -61,144 +76,15 @@ const groups = [
       { key: 'home.media.loginLink', label: 'Login image link', multiline: false },
     ],
   },
-  {
-    title: 'Info table',
-    fields: [
-      { key: 'home.infoTable.title', label: 'Title', multiline: false },
-      { key: 'home.infoTable.subtitle', label: 'Subtitle', multiline: false },
-      { key: 'home.infoTable.website', label: 'Website (label)', multiline: false },
-      { key: 'home.infoTable.websiteValue', label: 'Website (value)', multiline: false },
-      { key: 'home.infoTable.products', label: 'Products (label)', multiline: false },
-      { key: 'home.infoTable.productsValue', label: 'Products (value)', multiline: false },
-      { key: 'home.infoTable.promoCode', label: 'Promo code (label)', multiline: false },
-      { key: 'home.infoTable.promoCodeValue', label: 'Promo code (value)', multiline: false },
-      { key: 'home.infoTable.depositBonus', label: 'Deposit promocode (label)', multiline: false },
-      { key: 'home.infoTable.depositBonusValue', label: 'Deposit promocode (value)', multiline: false },
-      { key: 'home.infoTable.bonusValue', label: 'Bonus value (label)', multiline: false },
-      { key: 'home.infoTable.bonusValueValue', label: 'Bonus value (value)', multiline: false },
-      { key: 'home.infoTable.established', label: 'Established (label)', multiline: false },
-      { key: 'home.infoTable.establishedValue', label: 'Established (value)', multiline: false },
-      { key: 'home.infoTable.acceptedCrypto', label: 'Accepted crypto (label)', multiline: false },
-      { key: 'home.infoTable.acceptedCryptoValue', label: 'Accepted crypto (value)', multiline: false },
-      { key: 'home.infoTable.currencies', label: 'Currencies (label)', multiline: false },
-      { key: 'home.infoTable.currenciesValue', label: 'Currencies (value)', multiline: false },
-      { key: 'home.infoTable.websiteLanguages', label: 'Website languages (label)', multiline: false },
-      { key: 'home.infoTable.websiteLanguagesValue', label: 'Website languages (value)', multiline: false },
-      { key: 'home.infoTable.mobileApp', label: 'Mobile app (label)', multiline: false },
-      { key: 'home.infoTable.mobileAppValue', label: 'Mobile app (value)', multiline: false },
-      { key: 'home.infoTable.liveSupport', label: 'Live support (label)', multiline: false },
-      { key: 'home.infoTable.liveSupportValue', label: 'Live support (value)', multiline: false },
-      { key: 'home.infoTable.liveStreaming', label: 'Live streaming (label)', multiline: false },
-      { key: 'home.infoTable.liveStreamingValue', label: 'Live streaming (value)', multiline: false },
-      { key: 'home.infoTable.minimumDeposit', label: 'Minimum deposit (label)', multiline: false },
-      { key: 'home.infoTable.minimumDepositValue', label: 'Minimum deposit (value)', multiline: false },
-    ],
-  },
-  {
-    title: 'Promo info',
-    fields: [
-      { key: 'home.promoInfo.title', label: 'Title', multiline: false },
-      { key: 'home.promoInfo.p1', label: 'P1', multiline: true },
-      { key: 'home.promoInfo.p2', label: 'P2', multiline: true },
-      { key: 'home.promoInfo.summaryTitle', label: 'Summary title', multiline: false },
-      { key: 'home.promoInfo.tableProduct', label: 'Table: Product', multiline: false },
-      { key: 'home.promoInfo.tablePromo', label: 'Table: Promo code', multiline: false },
-      { key: 'home.promoInfo.tableOffer', label: 'Table: Offer', multiline: false },
-      { key: 'home.promoInfo.sportsRowOffer', label: 'Sports row offer', multiline: false },
-      { key: 'home.promoInfo.casinoRowOffer', label: 'Casino row offer', multiline: false },
-      { key: 'home.promoInfo.p3', label: 'P3', multiline: true },
-      { key: 'home.promoInfo.p4', label: 'P4', multiline: true },
-      { key: 'home.promoInfo.p5', label: 'P5', multiline: true },
-      { key: 'home.promoInfo.p6', label: 'P6', multiline: true },
-      { key: 'home.promoInfo.p7', label: 'P7', multiline: true },
-      { key: 'home.promoInfo.p8', label: 'P8', multiline: true },
-      { key: 'home.promoInfo.p9', label: 'P9', multiline: true },
-      { key: 'home.promoInfo.listQuick', label: 'List: Quick', multiline: false },
-      { key: 'home.promoInfo.listPhone', label: 'List: Phone', multiline: false },
-      { key: 'home.promoInfo.listEmail', label: 'List: Email', multiline: false },
-      { key: 'home.promoInfo.listSocial', label: 'List: Social', multiline: false },
-    ],
-  },
-  {
-    title: 'Official',
-    fields: [
-      { key: 'home.official.title', label: 'Title', multiline: false },
-      { key: 'home.official.p1', label: 'P1', multiline: true },
-      { key: 'home.official.p2', label: 'P2', multiline: true },
-      { key: 'home.official.p3', label: 'P3', multiline: true },
-      { key: 'home.official.p4', label: 'P4', multiline: true },
-      { key: 'home.official.p5', label: 'P5', multiline: true },
-      { key: 'home.official.p6', label: 'P6', multiline: true },
-      { key: 'home.official.p7', label: 'P7', multiline: true },
-      { key: 'home.official.paymentsTitle', label: 'Payments title', multiline: false },
-      { key: 'home.official.paymentsP1', label: 'Payments P1', multiline: true },
-      { key: 'home.official.paymentsP2', label: 'Payments P2', multiline: true },
-      { key: 'home.official.paymentsList.mastercard', label: 'Payments: Mastercard', multiline: false },
-      { key: 'home.official.paymentsList.visa', label: 'Payments: Visa', multiline: false },
-      { key: 'home.official.paymentsList.bitcoin', label: 'Payments: Bitcoin', multiline: false },
-      { key: 'home.official.paymentsList.ethereum', label: 'Payments: Ethereum', multiline: false },
-      { key: 'home.official.paymentsList.litecoin', label: 'Payments: Litecoin', multiline: false },
-      { key: 'home.official.paymentsList.ecopayz', label: 'Payments: ecoPayz', multiline: false },
-      { key: 'home.official.paymentsList.googlePay', label: 'Payments: Google Pay', multiline: false },
-      { key: 'home.official.paymentsList.webmoney', label: 'Payments: WebMoney', multiline: false },
-      { key: 'home.official.paymentsList.qiwi', label: 'Payments: QIWI', multiline: false },
-    ],
-  },
-  {
-    title: 'Promos',
-    fields: [
-      { key: 'home.promos.allTitle', label: 'Section title', multiline: false },
-      { key: 'home.promos.pragmatic.badge', label: 'Pragmatic: Badge', multiline: false },
-      { key: 'home.promos.pragmatic.title', label: 'Pragmatic: Title', multiline: false },
-      { key: 'home.promos.pragmatic.text', label: 'Pragmatic: Text', multiline: true },
-      { key: 'home.promos.pragmatic.cta', label: 'Pragmatic: CTA', multiline: false },
-      { key: 'home.promos.bigSlots.badge', label: 'Big slots: Badge', multiline: false },
-      { key: 'home.promos.bigSlots.title', label: 'Big slots: Title', multiline: false },
-      { key: 'home.promos.bigSlots.text', label: 'Big slots: Text', multiline: true },
-      { key: 'home.promos.bigSlots.cta', label: 'Big slots: CTA', multiline: false },
-      { key: 'home.promos.freeSpins.badge', label: 'Free spins: Badge', multiline: false },
-      { key: 'home.promos.freeSpins.title', label: 'Free spins: Title', multiline: false },
-      { key: 'home.promos.freeSpins.text', label: 'Free spins: Text', multiline: true },
-      { key: 'home.promos.freeSpins.cta', label: 'Free spins: CTA', multiline: false },
-      { key: 'home.promos.sportsBonus.badge', label: 'Sports promocode: Badge', multiline: false },
-      { key: 'home.promos.sportsBonus.title', label: 'Sports promocode: Title', multiline: false },
-      { key: 'home.promos.sportsBonus.text', label: 'Sports promocode: Text', multiline: true },
-      { key: 'home.promos.sportsBonus.cta', label: 'Sports promocode: CTA', multiline: false },
-      { key: 'home.promos.betRefund.badge', label: 'Bet refund: Badge', multiline: false },
-      { key: 'home.promos.betRefund.title', label: 'Bet refund: Title', multiline: false },
-      { key: 'home.promos.betRefund.text', label: 'Bet refund: Text', multiline: true },
-      { key: 'home.promos.betRefund.cta', label: 'Bet refund: CTA', multiline: false },
-      { key: 'home.promos.weeklyBonuses.badge', label: 'Weekly bonuses: Badge', multiline: false },
-      { key: 'home.promos.weeklyBonuses.title', label: 'Weekly bonuses: Title', multiline: false },
-      { key: 'home.promos.weeklyBonuses.text', label: 'Weekly bonuses: Text', multiline: true },
-      { key: 'home.promos.weeklyBonuses.cta', label: 'Weekly bonuses: CTA', multiline: false },
-      { key: 'home.promos.winFreeBets.badge', label: 'Win free bets: Badge', multiline: false },
-      { key: 'home.promos.winFreeBets.title', label: 'Win free bets: Title', multiline: false },
-      { key: 'home.promos.winFreeBets.text', label: 'Win free bets: Text', multiline: true },
-      { key: 'home.promos.winFreeBets.cta', label: 'Win free bets: CTA', multiline: false },
-      { key: 'home.promos.weeklyCasino.badge', label: 'Weekly casino: Badge', multiline: false },
-      { key: 'home.promos.weeklyCasino.title', label: 'Weekly casino: Title', multiline: false },
-      { key: 'home.promos.weeklyCasino.text', label: 'Weekly casino: Text', multiline: true },
-      { key: 'home.promos.weeklyCasino.cta', label: 'Weekly casino: CTA', multiline: false },
-    ],
-  },
-  {
-    title: 'FAQ',
-    fields: [
-      { key: 'home.faq.title', label: 'Title', multiline: false },
-      { key: 'home.faq.q1.question', label: 'Q1 question', multiline: false },
-      { key: 'home.faq.q1.answer', label: 'Q1 answer', multiline: true },
-      { key: 'home.faq.q2.question', label: 'Q2 question', multiline: false },
-      { key: 'home.faq.q2.answer', label: 'Q2 answer', multiline: true },
-      { key: 'home.faq.q3.question', label: 'Q3 question', multiline: false },
-      { key: 'home.faq.q3.answer', label: 'Q3 answer', multiline: true },
-      { key: 'home.faq.q4.question', label: 'Q4 question', multiline: false },
-      { key: 'home.faq.q4.answer', label: 'Q4 answer', multiline: true },
-    ],
-  },
+]
+
+const faqFields = [
+  { key: 'home.faq.title', label: 'Title', multiline: false },
 ]
 
 const form = reactive<Record<string, string>>({})
+const extraFaq = ref<ExtraFaqItem[]>([])
+const htmlContent = ref('')
 const saving = ref(false)
 const errorMessage = ref('')
 
@@ -232,6 +118,8 @@ async function addLocale() {
   }
 }
 
+const standaloneFields = ['home.promos.allTitle']
+
 function loadForm() {
   const msgs = serverMessages.value
   for (const group of groups) {
@@ -239,10 +127,67 @@ function loadForm() {
       form[field.key] = msgs[field.key] ?? ''
     }
   }
+  for (const field of faqFields) {
+    form[field.key] = msgs[field.key] ?? ''
+  }
+  for (const key of standaloneFields) {
+    form[key] = msgs[key] ?? ''
+  }
   errorMessage.value = ''
 }
 
 watch(serverMessages, loadForm, { immediate: true })
+
+function loadExtraFaq() {
+  const raw = faqPage.value?.content || ''
+  let stored: ExtraFaqItem[] = []
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Record<string, ExtraFaqItem[]>
+      const list = parsed[activeLocale.value] || parsed.en || []
+      stored = Array.isArray(list)
+        ? list.map(item => ({ question: item?.question || '', answer: item?.answer || '' }))
+        : []
+    } catch {
+      stored = []
+    }
+  }
+  if (stored.length) {
+    extraFaq.value = stored
+    return
+  }
+  const msgs = serverMessages.value
+  const migrated: ExtraFaqItem[] = []
+  for (let i = 1; i <= 4; i++) {
+    const q = msgs[`home.faq.q${i}.question`]
+    const a = msgs[`home.faq.q${i}.answer`]
+    if (q || a) migrated.push({ question: q || '', answer: a || '' })
+  }
+  extraFaq.value = migrated
+}
+
+watch([activeLocale, () => faqPage.value?.content, serverMessages], loadExtraFaq, { immediate: true })
+
+function loadHtmlContent() {
+  const raw = htmlPage.value?.content || ''
+  if (!raw) { htmlContent.value = ''; return }
+  try {
+    const parsed = JSON.parse(raw) as Record<string, string>
+    htmlContent.value = parsed[activeLocale.value] ?? parsed.en ?? ''
+  } catch {
+    htmlContent.value = ''
+  }
+}
+
+watch([activeLocale, () => htmlPage.value?.content], loadHtmlContent, { immediate: true })
+
+function addExtraFaq() {
+  extraFaq.value.push({ question: '', answer: '' })
+}
+
+function removeExtraFaq(index: number) {
+  extraFaq.value.splice(index, 1)
+}
 
 async function save() {
   try {
@@ -255,13 +200,60 @@ async function save() {
         updated[field.key] = form[field.key] ?? ''
       }
     }
+    for (const field of faqFields) {
+      updated[field.key] = form[field.key] ?? ''
+    }
+    for (const key of standaloneFields) {
+      updated[key] = form[key] ?? ''
+    }
 
     await $fetch('/api/admin/locales', {
       method: 'PUT',
       body: { code: activeLocale.value, messages: updated },
     })
 
+    let nextFaqByLocale: Record<string, ExtraFaqItem[]> = {}
+    try {
+      nextFaqByLocale = JSON.parse(faqPage.value?.content || '{}') as Record<string, ExtraFaqItem[]>
+    } catch {
+      nextFaqByLocale = {}
+    }
+    nextFaqByLocale[activeLocale.value] = extraFaq.value
+      .map(item => ({
+        question: item.question.trim(),
+        answer: item.answer.trim(),
+      }))
+      .filter(item => item.question && item.answer)
+
+    await $fetch('/api/admin/pages', {
+      method: 'PUT',
+      body: {
+        slug: '_sys_home_faq',
+        title: 'Home FAQ',
+        content: JSON.stringify(nextFaqByLocale, null, 2),
+      },
+    })
+
+    let nextHtmlByLocale: Record<string, string> = {}
+    try {
+      nextHtmlByLocale = JSON.parse(htmlPage.value?.content || '{}') as Record<string, string>
+    } catch {
+      nextHtmlByLocale = {}
+    }
+    nextHtmlByLocale[activeLocale.value] = htmlContent.value
+
+    await $fetch('/api/admin/pages', {
+      method: 'PUT',
+      body: {
+        slug: '_sys_home_html',
+        title: 'Home HTML Content',
+        content: JSON.stringify(nextHtmlByLocale, null, 2),
+      },
+    })
+
     await refresh()
+    await refreshFaq()
+    await refreshHtml()
   }
   catch (error: any) {
     errorMessage.value = error?.data?.statusMessage || 'Ошибка сохранения'
@@ -348,6 +340,63 @@ async function save() {
         </div>
       </div>
 
+      <div class="admin-page__group">
+        <h2 class="admin-page__groupTitle">Info table + Promo info + Official (HTML)</h2>
+        <div class="admin-page__groupBody">
+          <label class="admin-page__field">
+            <span class="admin-page__label">HTML-контент (Info table, Promo info, Official)</span>
+            <textarea
+              v-model="htmlContent"
+              class="admin-page__textarea admin-page__textarea--html"
+              rows="20"
+              spellcheck="false"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="admin-page__group">
+        <h2 class="admin-page__groupTitle">Promos section</h2>
+        <div class="admin-page__groupBody">
+          <label class="admin-page__field">
+            <span class="admin-page__label">
+              Section title
+              <span class="admin-page__key">home.promos.allTitle</span>
+            </span>
+            <input v-model="form['home.promos.allTitle']" class="admin-page__input" type="text">
+          </label>
+        </div>
+      </div>
+
+      <div class="admin-page__group">
+        <h2 class="admin-page__groupTitle">FAQ</h2>
+        <div class="admin-page__groupBody">
+          <label class="admin-page__field">
+            <span class="admin-page__label">
+              Title
+              <span class="admin-page__key">home.faq.title</span>
+            </span>
+            <input v-model="form['home.faq.title']" class="admin-page__input" type="text">
+          </label>
+          <div v-for="(item, idx) in extraFaq" :key="idx" class="admin-page__faqCard">
+            <label class="admin-page__field">
+              <span class="admin-page__label">Вопрос</span>
+              <input v-model="item.question" class="admin-page__input" type="text">
+            </label>
+            <label class="admin-page__field">
+              <span class="admin-page__label">Ответ</span>
+              <textarea v-model="item.answer" class="admin-page__textarea" rows="3" />
+            </label>
+            <button type="button" class="admin-page__addLocaleBtn" @click="removeExtraFaq(idx)">
+              Удалить
+            </button>
+          </div>
+          <button type="button" class="admin-page__addLocaleBtn" @click="addExtraFaq">
+            + Добавить FAQ
+          </button>
+        </div>
+      </div>
+
       <p v-if="errorMessage" class="admin-page__error">
         {{ errorMessage }}
       </p>
@@ -427,6 +476,14 @@ async function save() {
   color: #111111;
 }
 
+.admin-page__groupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
 .admin-page__groupBody {
   display: flex;
   flex-direction: column;
@@ -444,6 +501,11 @@ async function save() {
   margin: 0;
   font-size: 13px;
   color: #dc2626;
+}
+
+.admin-page__hint {
+  font-size: 12px;
+  color: #666666;
 }
 
 .admin-page__localeRow {
@@ -472,6 +534,15 @@ async function save() {
   background: #f3f4f6;
 }
 
+.admin-page__faqCard {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .admin-page__addLocaleForm {
   display: flex;
   flex-wrap: wrap;
@@ -483,5 +554,11 @@ async function save() {
 .admin-page__input--sm {
   width: 140px;
   flex: unset;
+}
+
+.admin-page__textarea--html {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  min-height: 300px;
 }
 </style>

@@ -821,6 +821,7 @@ onUnmounted(() => {
   margin-top: 20px;
   display: grid;
   gap: 10px;
+  max-width: 350px;
 }
 
 .reviewNews__title {
@@ -902,6 +903,12 @@ onUnmounted(() => {
   }
   .reviewArticleSection__aside {
     position: static;
+  }
+}
+
+@media (max-width: 767px) {
+  .reviewArticleSection__aside {
+    display: none;
   }
 }
 

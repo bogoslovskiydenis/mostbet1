@@ -18,10 +18,35 @@ type DynamicPage = {
   newsPlacement?: 'home' | 'promocode' | 'review'
   locales?: Record<string, LocaleContent>
 }
+type ExtraFaqItem = {
+  question: string
+  answer: string
+}
+type SystemPage = {
+  slug: string
+  content?: string
+}
 
 const { locale } = useAppLocale()
 
 const { data: allPages } = useFetch<DynamicPage[]>('/api/admin/pages')
+const { data: faqSettings } = useFetch<SystemPage | null>('/api/admin/pages', {
+  query: { slug: '_sys_home_faq' },
+})
+const { data: htmlSettings } = useFetch<SystemPage | null>('/api/admin/pages', {
+  query: { slug: '_sys_home_html' },
+})
+
+const homeHtmlContent = computed(() => {
+  const raw = htmlSettings.value?.content || ''
+  if (!raw) return ''
+  try {
+    const parsed = JSON.parse(raw) as Record<string, string>
+    return parsed[locale.value] ?? parsed.en ?? ''
+  } catch {
+    return ''
+  }
+})
 const dynamicPages = computed(() =>
   (allPages.value || []).filter(p =>
     !p.slug.startsWith('_')
@@ -64,6 +89,30 @@ const promoLink = computed(() => msgOrFallback('home.media.promoLink', '#promo-c
 
 const loginImage = computed(() => msgOrFallback('home.media.loginImage', bannerLogin))
 const loginLink = computed(() => msgOrFallback('home.media.loginLink', '#sign-in'))
+
+const faqItems = computed<ExtraFaqItem[]>(() => {
+  const base = [
+    { question: th('home.faq.q1.question'), answer: th('home.faq.q1.answer') },
+    { question: th('home.faq.q2.question'), answer: th('home.faq.q2.answer') },
+    { question: th('home.faq.q3.question'), answer: th('home.faq.q3.answer') },
+    { question: th('home.faq.q4.question'), answer: th('home.faq.q4.answer') },
+  ]
+  const raw = faqSettings.value?.content || ''
+  if (!raw) return base
+  try {
+    const parsed = JSON.parse(raw) as Record<string, ExtraFaqItem[]>
+    const extra = parsed[locale.value] || parsed.en || []
+    if (!Array.isArray(extra)) return base
+    return [
+      ...base,
+      ...extra
+        .map(item => ({ question: item?.question || '', answer: item?.answer || '' }))
+        .filter(item => item.question && item.answer),
+    ]
+  } catch {
+    return base
+  }
+})
 </script>
 
 <template>
@@ -202,189 +251,7 @@ const loginLink = computed(() => msgOrFallback('home.media.loginLink', '#sign-in
     </article>
   </section>
 
-  <section class="info-table">
-    <h2 class="info-table__title">
-      {{ th('home.infoTable.title') }}
-    </h2>
-    <h3 class="info-table__subtitle">
-      {{ th('home.infoTable.subtitle') }}
-    </h3>
-    <div class="info-table__wrapper">
-      <table class="info-table__table">
-        <tbody>
-        <tr>
-          <th>{{ th('home.infoTable.website') }}</th>
-          <td><a href="#" class="info-table__link">{{ th('home.infoTable.websiteValue') }}</a></td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.products') }}</th>
-          <td>{{ th('home.infoTable.productsValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.promoCode') }}</th>
-          <td><strong>{{ th('home.infoTable.promoCodeValue') }}</strong></td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.depositBonus') }}</th>
-          <td>{{ th('home.infoTable.depositBonusValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.bonusValue') }}</th>
-          <td>{{ th('home.infoTable.bonusValueValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.established') }}</th>
-          <td>{{ th('home.infoTable.establishedValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.acceptedCrypto') }}</th>
-          <td>{{ th('home.infoTable.acceptedCryptoValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.currencies') }}</th>
-          <td>{{ th('home.infoTable.currenciesValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.websiteLanguages') }}</th>
-          <td>{{ th('home.infoTable.websiteLanguagesValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.mobileApp') }}</th>
-          <td>{{ th('home.infoTable.mobileAppValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.liveSupport') }}</th>
-          <td>{{ th('home.infoTable.liveSupportValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.liveStreaming') }}</th>
-          <td>{{ th('home.infoTable.liveStreamingValue') }}</td>
-        </tr>
-        <tr>
-          <th>{{ th('home.infoTable.minimumDeposit') }}</th>
-          <td>{{ th('home.infoTable.minimumDepositValue') }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="promo-info">
-    <h2 class="promo-info__title">
-      {{ th('home.promoInfo.title') }}
-    </h2>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p1') }}
-    </p>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p2') }}
-    </p>
-
-    <h3 class="promo-info__subtitle">
-      {{ th('home.promoInfo.summaryTitle') }}
-    </h3>
-    <div class="promo-info__tableWrapper">
-      <table class="promo-info__table">
-        <thead>
-        <tr>
-          <th>{{ th('home.promoInfo.tableProduct') }}</th>
-          <th>{{ th('home.promoInfo.tableProduct') }}</th>
-          <th>{{ th('home.promoInfo.tablePromo') }}</th>
-          <th>{{ th('home.promoInfo.tableOffer') }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>MostBet Sports</td>
-          <td><strong>HUGE</strong></td>
-          <td>{{ th('home.promoInfo.sportsRowOffer') }}</td>
-        </tr>
-        <tr>
-          <td>MostBet Casino</td>
-          <td><strong>HUGE</strong></td>
-          <td>{{ th('home.promoInfo.casinoRowOffer') }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p3') }}
-    </p>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p4') }}
-    </p>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p5') }}
-    </p>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p6') }}
-    </p>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p7') }}
-    </p>
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p8') }}
-    </p>
-
-    <p class="promo-info__text">
-      {{ th('home.promoInfo.p9') }}
-    </p>
-    <ul class="promo-info__list">
-      <li>{{ th('home.promoInfo.listQuick') }}</li>
-      <li>{{ th('home.promoInfo.listPhone') }}</li>
-      <li>{{ th('home.promoInfo.listEmail') }}</li>
-      <li>{{ th('home.promoInfo.listSocial') }}</li>
-    </ul>
-  </section>
-
-  <section class="official-info">
-    <h2 class="official-info__title">
-      {{ th('home.official.title') }}
-    </h2>
-    <p class="official-info__text">
-      {{ th('home.official.p1') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.p2') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.p3') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.p4') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.p5') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.p6') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.p7') }}
-    </p>
-
-    <h3 class="official-info__subtitle">
-      {{ th('home.official.paymentsTitle') }}
-    </h3>
-    <p class="official-info__text">
-      {{ th('home.official.paymentsP1') }}
-    </p>
-    <p class="official-info__text">
-      {{ th('home.official.paymentsP2') }}
-    </p>
-    <ul class="official-info__list">
-      <li>{{ th('home.official.paymentsList.mastercard') }}</li>
-      <li>{{ th('home.official.paymentsList.visa') }}</li>
-      <li>{{ th('home.official.paymentsList.bitcoin') }}</li>
-      <li>{{ th('home.official.paymentsList.ethereum') }}</li>
-      <li>{{ th('home.official.paymentsList.litecoin') }}</li>
-      <li>{{ th('home.official.paymentsList.ecopayz') }}</li>
-      <li>{{ th('home.official.paymentsList.googlePay') }}</li>
-      <li>{{ th('home.official.paymentsList.webmoney') }}</li>
-      <li>{{ th('home.official.paymentsList.qiwi') }}</li>
-    </ul>
-  </section>
+  <div v-if="homeHtmlContent" class="home-html" v-html="homeHtmlContent" />
 
   <section class="promo-grid">
     <h2 class="promo-grid__title">
@@ -421,36 +288,12 @@ const loginLink = computed(() => msgOrFallback('home.media.loginLink', '#sign-in
     <h2 class="faq__title">
       {{ th('home.faq.title') }}
     </h2>
-    <div class="faq__item">
+    <div v-for="(item, idx) in faqItems" :key="`${idx}-${item.question}`" class="faq__item">
       <h3 class="faq__question">
-        {{ th('home.faq.q1.question') }}
+        {{ item.question }}
       </h3>
       <p class="faq__answer">
-        {{ th('home.faq.q1.answer') }}
-      </p>
-    </div>
-    <div class="faq__item">
-      <h3 class="faq__question">
-        {{ th('home.faq.q2.question') }}
-      </h3>
-      <p class="faq__answer">
-        {{ th('home.faq.q2.answer') }}
-      </p>
-    </div>
-    <div class="faq__item">
-      <h3 class="faq__question">
-        {{ th('home.faq.q3.question') }}
-      </h3>
-      <p class="faq__answer">
-        {{ th('home.faq.q3.answer') }}
-      </p>
-    </div>
-    <div class="faq__item">
-      <h3 class="faq__question">
-        {{ th('home.faq.q4.question') }}
-      </h3>
-      <p class="faq__answer">
-        {{ th('home.faq.q4.answer') }}
+        {{ item.answer }}
       </p>
     </div>
   </section>
@@ -608,136 +451,136 @@ const loginLink = computed(() => msgOrFallback('home.media.loginLink', '#sign-in
   background: #ff6a00;
 }
 
-.info-table {
+.home-html :deep(.info-table) {
   margin-top: 56px;
 }
 
-.info-table__title {
+.home-html :deep(.info-table__title) {
   margin: 0 0 8px;
   font-size: 24px;
   font-weight: 700;
 }
 
-.info-table__subtitle {
+.home-html :deep(.info-table__subtitle) {
   margin: 0 0 16px;
   font-size: 18px;
   font-weight: 700;
 }
 
-.info-table__wrapper {
+.home-html :deep(.info-table__wrapper) {
   overflow-x: auto;
 }
 
-.info-table__table {
+.home-html :deep(.info-table__table) {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.info-table__table th,
-.info-table__table td {
+.home-html :deep(.info-table__table th),
+.home-html :deep(.info-table__table td) {
   padding: 10px 12px;
   text-align: left;
 }
 
-.info-table__table th {
+.home-html :deep(.info-table__table th) {
   width: 180px;
   font-weight: 600;
 }
 
-.info-table__link {
+.home-html :deep(.info-table__link) {
   color: var(--accent);
   text-decoration: underline;
 }
 
-.promo-info {
+.home-html :deep(.promo-info) {
   margin-top: 56px;
   max-width: 860px;
 }
 
-.promo-info__title {
+.home-html :deep(.promo-info__title) {
   margin: 0 0 12px;
   font-size: 24px;
   font-weight: 700;
 }
 
-.promo-info__subtitle {
+.home-html :deep(.promo-info__subtitle) {
   margin: 24px 0 12px;
   font-size: 18px;
   font-weight: 700;
 }
 
-.promo-info__text {
+.home-html :deep(.promo-info__text) {
   margin: 0 0 12px;
   color: var(--muted);
   font-size: 14px;
 }
 
-.promo-info__tableWrapper {
+.home-html :deep(.promo-info__tableWrapper) {
   margin-top: 8px;
   overflow-x: auto;
 }
 
-.promo-info__table {
+.home-html :deep(.promo-info__table) {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.promo-info__table th,
-.promo-info__table td {
+.home-html :deep(.promo-info__table th),
+.home-html :deep(.promo-info__table td) {
   padding: 10px 12px;
   text-align: left;
 }
 
-.promo-info__table thead th {
+.home-html :deep(.promo-info__table thead th) {
   background: #003366;
   color: #fff;
   font-weight: 600;
 }
 
-.promo-info__list {
+.home-html :deep(.promo-info__list) {
   margin: 8px 0 0 18px;
   padding: 0;
   color: var(--muted);
   font-size: 14px;
 }
 
-.promo-info__list li + li {
+.home-html :deep(.promo-info__list li + li) {
   margin-top: 6px;
 }
 
-.official-info {
+.home-html :deep(.official-info) {
   margin-top: 56px;
   max-width: 860px;
 }
 
-.official-info__title {
+.home-html :deep(.official-info__title) {
   margin: 0 0 12px;
   font-size: 24px;
   font-weight: 700;
 }
 
-.official-info__subtitle {
+.home-html :deep(.official-info__subtitle) {
   margin: 24px 0 12px;
   font-size: 18px;
   font-weight: 700;
 }
 
-.official-info__text {
+.home-html :deep(.official-info__text) {
   margin: 0 0 12px;
   color: var(--muted);
   font-size: 14px;
 }
 
-.official-info__list {
+.home-html :deep(.official-info__list) {
   margin: 4px 0 0 18px;
   padding: 0;
   color: var(--muted);
   font-size: 14px;
 }
 
-.official-info__list li + li {
+.home-html :deep(.official-info__list li + li) {
   margin-top: 4px;
 }
 
@@ -755,6 +598,7 @@ const loginLink = computed(() => msgOrFallback('home.media.loginLink', '#sign-in
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+  max-width: 350px;
 }
 
 .promo-card {
