@@ -57,7 +57,7 @@ function logout() {
             class="admin-layout__link"
             :class="{ 'admin-layout__link--active': isPromoSectionActive }"
           >
-            Promo Code
+            Pages
           </NuxtLink>
         </div>
 

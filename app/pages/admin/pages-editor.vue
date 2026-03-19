@@ -12,10 +12,8 @@ type LocaleContent = {
 type PageItem = {
   slug: string
   bannerUrl?: string
-  newsPlacement?: 'home' | 'promocode' | 'review'
   locales?: Record<string, LocaleContent>
 }
-type NewsPlacement = 'home' | 'promocode' | 'review'
 
 const route = useRoute()
 const editSlug = computed(() => {
@@ -36,7 +34,6 @@ const addBanner = ref(false)
 const form = reactive({
   slug: '',
   bannerUrl: '',
-  newsPlacement: 'home' as NewsPlacement,
   title: '',
   badge: '',
   description: '',
@@ -68,7 +65,6 @@ function loadLocaleFields(page: PageItem, locale: string) {
 function initCreateMode() {
   form.slug = ''
   form.bannerUrl = ''
-  form.newsPlacement = 'home'
   resetLocaleFields()
   addBanner.value = false
   errorMessage.value = ''
@@ -79,7 +75,6 @@ function initEditMode() {
   if (!page) return
   form.slug = page.slug
   form.bannerUrl = page.bannerUrl || ''
-  form.newsPlacement = page.newsPlacement || (page.slug.startsWith('promo-news-') ? 'promocode' : 'home')
   addBanner.value = Boolean(page.bannerUrl)
   loadLocaleFields(page, activeLocale.value)
   errorMessage.value = ''
@@ -100,22 +95,22 @@ async function submitForm() {
   try {
     saving.value = true
     errorMessage.value = ''
-    const slug = form.slug.trim()
-    if (!slug) {
+
+    const nextSlug = form.slug.trim()
+    if (!nextSlug) {
       errorMessage.value = 'Slug обязателен'
       return
     }
-    if (slug === 'review') {
-      errorMessage.value = 'Slug "review" редактируется только в разделе Review'
+    if (nextSlug.startsWith('_')) {
+      errorMessage.value = 'Slug системных страниц запрещен'
       return
     }
 
     await $fetch('/api/admin/pages', {
       method: isEditing.value ? 'PUT' : 'POST',
       body: {
-        slug,
+        slug: nextSlug,
         bannerUrl: addBanner.value ? form.bannerUrl.trim() : '',
-        newsPlacement: form.newsPlacement,
         locale: activeLocale.value,
         title: form.title.trim(),
         badge: form.badge.trim(),
@@ -126,16 +121,16 @@ async function submitForm() {
     })
 
     await refresh()
-    await navigateTo('/admin/news')
+    await navigateTo('/admin/pages')
   } catch (error: any) {
-    errorMessage.value = error?.data?.statusMessage || 'Ошибка сохранения'
+    errorMessage.value = error?.data?.statusMessage || error?.message || 'Ошибка сохранения'
   } finally {
     saving.value = false
   }
 }
 
 function backToList() {
-  navigateTo('/admin/news')
+  navigateTo('/admin/pages')
 }
 </script>
 
@@ -143,7 +138,7 @@ function backToList() {
   <div class="ap">
     <div class="ap__head">
       <h2 class="ap__formTitle">
-        {{ isEditing ? 'Редактирование новости' : 'Новая новость' }}
+        {{ isEditing ? 'Редактирование страницы' : 'Новая страница' }}
       </h2>
       <button type="button" class="ap__btn ap__btn--ghost" @click="backToList">
         К списку
@@ -157,19 +152,9 @@ function backToList() {
           v-model="form.slug"
           type="text"
           class="ap__input"
-          placeholder="пример: news-1"
           :disabled="isEditing"
           required
         >
-      </label>
-
-      <label class="ap__field">
-        <span class="ap__label">Куда публиковать</span>
-        <select v-model="form.newsPlacement" class="ap__input">
-          <option value="home">Главная</option>
-          <option value="promocode">Промокод</option>
-          <option value="review">Review</option>
-        </select>
       </label>
 
       <label class="ap__checkboxRow">
@@ -230,7 +215,11 @@ function backToList() {
 
       <p v-if="errorMessage" class="ap__error">{{ errorMessage }}</p>
 
-      <button type="submit" class="ap__btn ap__btn--primary ap__btn--full" :disabled="saving">
+      <button
+        type="submit"
+        class="ap__btn ap__btn--primary ap__btn--full"
+        :disabled="saving || !form.slug.trim()"
+      >
         {{ saving ? 'Сохранение...' : `Сохранить (${activeLocale.toUpperCase()})` }}
       </button>
     </form>

@@ -398,7 +398,7 @@ function getPageTitle(page: PageItem) {
 }
 
 .ap__btn--primary { background: #1f6feb; color: #fff; }
-.ap__btn--ghost { background: #fff; border: 1px solid #d0d0d0; }
+.ap__btn--ghost { background: #fff; border: 1px solid #d0d0d0; color: #000; }
 .ap__btn--danger { background: #dc2626; color: #fff; }
 .ap__btn--full { width: 100%; padding: 10px; font-size: 14px; }
 
