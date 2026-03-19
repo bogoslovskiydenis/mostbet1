@@ -148,6 +148,8 @@ type ReviewConfig = {
   heroTitle?: string
   heroDescription?: string
   sectionTitle?: string
+  articleHtml?: string
+  articleTocTitle?: string
   showCryptoLabel?: string
   showCryptoDefault?: boolean
   columns?: {
@@ -180,6 +182,8 @@ const reviewConfig = computed<Required<Omit<ReviewConfig, 'cards' | 'columns'>> 
     heroTitle: parsed.heroTitle || reviewLocalePage.value?.title || 'Review',
     heroDescription: parsed.heroDescription || reviewLocalePage.value?.description || 'Detailed review of the official MostBet website.',
     sectionTitle: parsed.sectionTitle || 'Top Betting Sites',
+    articleHtml: parsed.articleHtml || '',
+    articleTocTitle: parsed.articleTocTitle || 'On this page',
     showCryptoLabel: parsed.showCryptoLabel || 'Show crypto',
     showCryptoDefault: Boolean(parsed.showCryptoDefault),
     columns: {
@@ -193,6 +197,32 @@ const reviewConfig = computed<Required<Omit<ReviewConfig, 'cards' | 'columns'>> 
   }
 })
 
+function withHeadingIds(html: string, prefix: string) {
+  let i = 0
+  return html.replace(/<h2>([\s\S]*?)<\/h2>/gi, (_, raw) => {
+    const label = String(raw).replace(/<[^>]+>/g, '').trim()
+    const base = slugifyHeading(label) || `section-${i + 1}`
+    const id = `${prefix}-${base}-${++i}`
+    return `<h2 id="${id}">${raw}</h2>`
+  })
+}
+
+const reviewArticleHtml = computed(() => withHeadingIds(reviewConfig.value.articleHtml || '', 'review-article'))
+const reviewArticleToc = computed<TocItem[]>(() => {
+  const html = reviewArticleHtml.value
+  if (!html) return []
+  const out: TocItem[] = []
+  const re = /<h2[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi
+  let m: RegExpExecArray | null
+  while ((m = re.exec(html))) {
+    const id = m[1]
+    const label = String(m[2]).replace(/<[^>]+>/g, '').trim()
+    if (id && label) out.push({ id, label })
+  }
+  return out
+})
+const activeReviewId = ref('')
+
 watch(
   () => reviewConfig.value.showCryptoDefault,
   (next) => {
@@ -202,6 +232,7 @@ watch(
 )
 
 let observer: IntersectionObserver | null = null
+let reviewObserver: IntersectionObserver | null = null
 
 function setupObserver() {
   observer?.disconnect()
@@ -227,8 +258,34 @@ function setupObserver() {
   headings.forEach(h => observer!.observe(h))
 }
 
+function setupReviewObserver() {
+  reviewObserver?.disconnect()
+  if (!reviewArticleToc.value.length) return
+
+  const ids = reviewArticleToc.value.map(t => t.id)
+  const headings = ids
+    .map(id => document.getElementById(id))
+    .filter(Boolean) as HTMLElement[]
+
+  if (!headings.length) return
+
+  reviewObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter(e => e.isIntersecting)
+      if (visible.length) activeReviewId.value = visible[0].target.id
+    },
+    { rootMargin: '-10% 0px -80% 0px', threshold: 0 },
+  )
+
+  headings.forEach(h => reviewObserver!.observe(h))
+}
+
 function tocClick(id: string) {
   activeId.value = id
+}
+
+function reviewTocClick(id: string) {
+  activeReviewId.value = id
 }
 
 watch(promoToc, async () => {
@@ -236,13 +293,20 @@ watch(promoToc, async () => {
   setupObserver()
 }, { immediate: false })
 
+watch(reviewArticleToc, async () => {
+  await nextTick()
+  setupReviewObserver()
+}, { immediate: false })
+
 onMounted(async () => {
   await nextTick()
   setupObserver()
+  setupReviewObserver()
 })
 
 onUnmounted(() => {
   observer?.disconnect()
+  reviewObserver?.disconnect()
 })
 </script>
 
@@ -306,8 +370,11 @@ onUnmounted(() => {
 
             <p class="reviewCard__terms">{{ item.terms }}</p>
           </article>
-
-          <div v-if="reviewNewsPages.length" class="reviewNews">
+        </div>
+      </section>
+      <section v-if="reviewNewsPages.length" class="reviewNewsSection">
+        <div class="reviewNewsSection__inner">
+          <div class="reviewNews">
             <p class="reviewNews__title">Related Articles</p>
             <NuxtLink
               v-for="item in reviewNewsPages"
@@ -327,6 +394,28 @@ onUnmounted(() => {
                 <span class="reviewNews__name">{{ getLocaleData(item)?.title || item.slug }}</span>
               </div>
             </NuxtLink>
+          </div>
+        </div>
+      </section>
+      <section v-if="reviewArticleHtml" class="reviewArticleSection">
+        <div class="reviewArticleSection__inner">
+          <div class="reviewArticleSection__grid">
+            <article class="reviewArticleSection__body" v-html="reviewArticleHtml" />
+            <aside class="reviewArticleSection__aside">
+              <nav v-if="reviewArticleToc.length" class="reviewToc" aria-label="Review article navigation">
+                <p class="reviewToc__title">{{ reviewConfig.articleTocTitle }}</p>
+                <a
+                  v-for="item in reviewArticleToc"
+                  :key="item.id"
+                  class="reviewToc__item"
+                  :class="{ 'reviewToc__item--active': activeReviewId === item.id }"
+                  :href="`#${item.id}`"
+                  @click="reviewTocClick(item.id)"
+                >
+                  {{ item.label }}
+                </a>
+              </nav>
+            </aside>
           </div>
         </div>
       </section>
@@ -477,6 +566,106 @@ onUnmounted(() => {
 
 .reviewWrap {
   padding: 22px 0 12px;
+}
+
+.reviewNewsSection {
+  padding: 6px 0 16px;
+}
+
+.reviewNewsSection__inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.reviewArticleSection {
+  padding: 6px 0 20px;
+}
+
+.reviewArticleSection__inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.reviewArticleSection__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+.reviewArticleSection__body {
+  background: #eceff3;
+  border-radius: 12px;
+  padding: 26px 24px;
+  color: #1a1d23;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.reviewArticleSection__body :deep(h2) {
+  margin: 0 0 14px;
+  color: #1a1d23;
+  font-size: 30px;
+  line-height: 1.15;
+  scroll-margin-top: 90px;
+}
+
+.reviewArticleSection__body :deep(h2 + p) {
+  margin-top: 0;
+}
+
+.reviewArticleSection__body :deep(p) {
+  margin: 0 0 14px;
+}
+
+.reviewArticleSection__body :deep(a) {
+  color: #1f6feb;
+  text-decoration: underline;
+}
+
+.reviewArticleSection__aside {
+  position: sticky;
+  top: 92px;
+}
+
+.reviewToc {
+  background: #eceff3;
+  border-radius: 12px;
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviewToc__title {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+}
+
+.reviewToc__item {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #2b3443;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.reviewToc__item:hover {
+  background: rgba(31, 111, 235, 0.08);
+}
+
+.reviewToc__item--active {
+  background: rgba(31, 111, 235, 0.12);
+  color: #1f6feb;
+  font-weight: 600;
 }
 
 .reviewWrap__title {
@@ -708,6 +897,12 @@ onUnmounted(() => {
   .reviewCard__amount { font-size: 28px; }
   .reviewCard__subtitle { font-size: 18px; }
   .reviewCard__promo { font-size: 14px; }
+  .reviewArticleSection__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reviewArticleSection__aside {
+    position: static;
+  }
 }
 
 @media (max-width: 699px) {
@@ -736,6 +931,13 @@ onUnmounted(() => {
     align-items: flex-start;
   }
   .reviewCard__score strong { font-size: 34px; }
+  .reviewArticleSection__body {
+    padding: 18px 16px;
+    font-size: 16px;
+  }
+  .reviewArticleSection__body :deep(h2) {
+    font-size: 24px;
+  }
 }
 
 .dpage__state {

@@ -115,6 +115,8 @@ const form = reactive({
   title: '',
   description: '',
   content: '',
+  articleHtml: '',
+  articleTocTitle: '',
 })
 
 const reviewPage = computed(() =>
@@ -132,6 +134,14 @@ function loadLocaleFields() {
   form.title = lc?.title || 'Review'
   form.description = lc?.description || 'Detailed review of the official MostBet website.'
   form.content = lc?.content || defaultConfig
+  try {
+    const parsed = JSON.parse(form.content || '{}') as Record<string, any>
+    form.articleHtml = typeof parsed.articleHtml === 'string' ? parsed.articleHtml : ''
+    form.articleTocTitle = typeof parsed.articleTocTitle === 'string' ? parsed.articleTocTitle : ''
+  } catch {
+    form.articleHtml = ''
+    form.articleTocTitle = ''
+  }
   errorMessage.value = ''
 }
 
@@ -141,6 +151,17 @@ async function save() {
   try {
     saving.value = true
     errorMessage.value = ''
+
+    let contentToSave = form.content
+    try {
+      const parsed = JSON.parse(form.content || '{}') as Record<string, any>
+      parsed.articleHtml = form.articleHtml
+      parsed.articleTocTitle = form.articleTocTitle
+      contentToSave = JSON.stringify(parsed, null, 2)
+    } catch {
+      errorMessage.value = 'JSON конфиг review содержит ошибку'
+      return
+    }
 
     await $fetch('/api/admin/pages', {
       method: 'PUT',
@@ -152,7 +173,7 @@ async function save() {
         description: form.description.trim(),
         ctaText: '',
         badge: '',
-        content: form.content,
+        content: contentToSave,
       },
     })
 
@@ -209,6 +230,16 @@ async function save() {
       <label class="ap__field">
         <span class="ap__label">JSON конфиг review (карточки, подписи, ссылки)</span>
         <textarea v-model="form.content" class="ap__textarea" rows="22" />
+      </label>
+
+      <label class="ap__field">
+        <span class="ap__label">HTML текст ниже секции новостей (articleHtml)</span>
+        <textarea v-model="form.articleHtml" class="ap__textarea" rows="8" placeholder="<h2>...</h2><p>...</p>" />
+      </label>
+
+      <label class="ap__field">
+        <span class="ap__label">Заголовок TOC (articleTocTitle)</span>
+        <input v-model="form.articleTocTitle" type="text" class="ap__input" placeholder="On this page">
       </label>
 
       <p v-if="errorMessage" class="ap__error">{{ errorMessage }}</p>
