@@ -11,6 +11,7 @@ const { locale } = useAppLocale()
 
 const slug = computed(() => String(route.params.slug || ''))
 const isSystemSlug = computed(() => slug.value.startsWith('_'))
+const isReviewPage = computed(() => slug.value === 'review')
 
 type LocaleContent = {
   title: string
@@ -31,7 +32,7 @@ const { data: page, error, pending } = useFetch<PageItem | null>(
 )
 
 const { data: allPages } = useFetch<PageItem[]>(
-  () => (slug.value === 'promo-code' ? '/api/admin/pages' : null),
+  () => ((slug.value === 'promo-code' || isReviewPage.value) ? '/api/admin/pages' : null),
 )
 
 const localePage = computed<LocaleContent | null>(() => {
@@ -54,6 +55,16 @@ const bannerSrc = computed(() => {
 })
 
 const isPromoCodePage = computed(() => slug.value === 'promo-code')
+const reviewPage = computed(() =>
+  (allPages.value || []).find(p => p.slug === 'review') || null,
+)
+const reviewLocalePage = computed<LocaleContent | null>(() => {
+  if (!reviewPage.value?.locales) return null
+  return reviewPage.value.locales[locale.value]
+    || reviewPage.value.locales['en']
+    || Object.values(reviewPage.value.locales)[0]
+    || null
+})
 
 const newsPages = computed(() =>
   (allPages.value || []).filter(p => p.slug.startsWith('promo-news-')),
@@ -109,6 +120,82 @@ const promoToc = computed<TocItem[]>(() => {
 })
 
 const activeId = ref('')
+const showCrypto = ref(false)
+
+type ReviewItem = {
+  rank: number
+  name: string
+  offer: string
+  score: string
+  scoreVotes: number
+  visitLabel: string
+  promo: string
+  subtitle: string
+  extra: string
+  terms: string
+  getBonusLabel?: string
+  findOutLabel?: string
+  offerLink?: string
+  findOutLink?: string
+  visitLink?: string
+}
+
+type ReviewConfig = {
+  heroTitle?: string
+  heroDescription?: string
+  sectionTitle?: string
+  showCryptoLabel?: string
+  showCryptoDefault?: boolean
+  columns?: {
+    playerRating?: string
+    ourScore?: string
+    secure?: string
+    trusted?: string
+    verified?: string
+  }
+  cards?: ReviewItem[]
+}
+
+function parseReviewConfig(content?: string): ReviewConfig {
+  if (!content?.trim()) return {}
+  try {
+    const parsed = JSON.parse(content)
+    if (parsed && typeof parsed === 'object') return parsed as ReviewConfig
+  } catch {
+    // ignore invalid JSON and fallback to defaults
+  }
+  return {}
+}
+
+const reviewConfig = computed<Required<Omit<ReviewConfig, 'cards' | 'columns'>> & {
+  columns: Required<NonNullable<ReviewConfig['columns']>>
+  cards: ReviewItem[]
+}>(() => {
+  const parsed = parseReviewConfig(reviewLocalePage.value?.content)
+  return {
+    heroTitle: parsed.heroTitle || reviewLocalePage.value?.title || 'Review',
+    heroDescription: parsed.heroDescription || reviewLocalePage.value?.description || 'Detailed review of the official MostBet website.',
+    sectionTitle: parsed.sectionTitle || 'Top Betting Sites',
+    showCryptoLabel: parsed.showCryptoLabel || 'Show crypto',
+    showCryptoDefault: Boolean(parsed.showCryptoDefault),
+    columns: {
+      playerRating: parsed.columns?.playerRating || 'Player Rating',
+      ourScore: parsed.columns?.ourScore || 'Our Score',
+      secure: parsed.columns?.secure || 'Secure',
+      trusted: parsed.columns?.trusted || 'Trusted',
+      verified: parsed.columns?.verified || 'Verified',
+    },
+    cards: Array.isArray(parsed.cards) ? parsed.cards : [],
+  }
+})
+
+watch(
+  () => reviewConfig.value.showCryptoDefault,
+  (next) => {
+    showCrypto.value = next
+  },
+  { immediate: true },
+)
 
 let observer: IntersectionObserver | null = null
 
@@ -156,7 +243,70 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="dpage">
+  <main class="dpage" :class="{ 'dpage--review': isReviewPage }">
+    <template v-if="isReviewPage">
+      <header class="reviewHero">
+        <div class="reviewHero__inner">
+          <nav class="reviewHero__breadcrumbs">
+            <NuxtLink to="/" class="reviewHero__crumb reviewHero__crumb--home">
+              <Icon icon="mdi:home-outline" class="reviewHero__homeIcon" />
+            </NuxtLink>
+            <span class="reviewHero__sep">/</span>
+            <span class="reviewHero__crumb reviewHero__crumb--current">{{ reviewConfig.heroTitle }}</span>
+          </nav>
+          <h1 class="reviewHero__title">{{ reviewConfig.heroTitle }}</h1>
+          <p class="reviewHero__text">{{ reviewConfig.heroDescription }}</p>
+        </div>
+      </header>
+
+      <section class="reviewWrap">
+        <div class="reviewWrap__inner">
+          <h2 class="reviewWrap__title">{{ reviewConfig.sectionTitle }}</h2>
+
+          <div class="reviewHeader">
+            <span>{{ reviewConfig.columns.playerRating }}</span>
+            <span>{{ reviewConfig.columns.ourScore }}</span>
+            <span>{{ reviewConfig.columns.secure }}</span>
+            <span>{{ reviewConfig.columns.trusted }}</span>
+            <span>{{ reviewConfig.columns.verified }}</span>
+          </div>
+
+          <article v-for="item in reviewConfig.cards" :key="`${item.rank}-${item.name}`" class="reviewCard">
+            <div class="reviewCard__rank">{{ item.rank }}</div>
+            <div class="reviewCard__brand">
+              <div class="reviewCard__logo">{{ item.name }}</div>
+            </div>
+
+            <div class="reviewCard__offer">
+              <p class="reviewCard__amount">{{ item.offer }}</p>
+              <p class="reviewCard__subtitle">{{ item.subtitle }}</p>
+              <p class="reviewCard__promo">{{ item.extra }}: <strong>{{ item.promo }}</strong></p>
+            </div>
+
+            <div class="reviewCard__rating">
+              <div class="reviewCard__stars">
+                <Icon v-for="i in 5" :key="i" icon="mdi:star" />
+              </div>
+              <span class="reviewCard__votes">Rate It! ({{ item.scoreVotes }})</span>
+            </div>
+
+            <div class="reviewCard__score">
+              <strong>{{ item.score }}</strong>
+              <a :href="item.findOutLink || '#'" class="reviewCard__link">{{ item.findOutLabel || 'Find out more' }}</a>
+            </div>
+
+            <div class="reviewCard__cta">
+              <a :href="item.offerLink || '#'" class="reviewCard__btn">{{ item.getBonusLabel || 'Get Bonus' }}</a>
+              <a :href="item.visitLink || '#'" class="reviewCard__visit">{{ item.visitLabel }}</a>
+            </div>
+
+            <p class="reviewCard__terms">{{ item.terms }}</p>
+          </article>
+        </div>
+      </section>
+    </template>
+
+    <template v-else>
     <div v-if="pending" class="dpage__state">Загрузка...</div>
 
     <div v-else-if="isSystemSlug || error || !page || !localePage" class="dpage__state">
@@ -229,6 +379,7 @@ onUnmounted(() => {
         </div>
       </section>
     </template>
+    </template>
   </main>
 </template>
 
@@ -237,6 +388,268 @@ onUnmounted(() => {
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 16px 0;
+}
+
+.dpage--review {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 24px;
+}
+
+
+.reviewHero__inner,
+.reviewWrap__inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.reviewHero__inner {
+  min-height: 220px;
+  padding-top: 18px;
+  padding-bottom: 34px;
+}
+
+.reviewHero__breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 12px;
+}
+
+.reviewHero__crumb--home {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reviewHero__homeIcon {
+  font-size: 13px;
+}
+
+.reviewHero__crumb--current {
+  color: #fff;
+}
+
+.reviewHero__title {
+  margin: 18px 0 8px;
+  font-size: 48px;
+  line-height: 1;
+}
+
+.reviewHero__text {
+  margin: 0;
+  font-size: 27px;
+  max-width: 720px;
+}
+
+.reviewWrap {
+  padding: 22px 0 12px;
+}
+
+.reviewWrap__title {
+  margin: 0 0 14px;
+  font-size: 40px;
+  line-height: 1.1;
+}
+
+.reviewHeader {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 90px 90px 90px;
+  gap: 16px;
+  justify-items: start;
+  font-size: 14px;
+  padding: 0 12px 6px 272px;
+}
+
+.reviewCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 170px minmax(220px, 1.1fr) 130px 110px 170px;
+  gap: 14px;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e6ec;
+  padding: 10px 12px 28px;
+  margin-bottom: 14px;
+}
+
+.reviewCard__rank {
+  color: #111;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.reviewCard__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reviewCard__logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+  background: #0f3c88;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.reviewCard__offer {
+  color: #222;
+}
+
+.reviewCard__amount {
+  margin: 0 0 2px;
+  font-size: 38px;
+  color: #ff6a00;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reviewCard__subtitle {
+  margin: 0 0 4px;
+  color: #13171d;
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.reviewCard__promo {
+  margin: 0;
+  font-size: 20px;
+  color: #3e444d;
+}
+
+.reviewCard__rating {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reviewCard__stars {
+  color: #ffbf24;
+  display: inline-flex;
+  font-size: 22px;
+}
+
+.reviewCard__votes {
+  font-size: 16px;
+  color: #616b78;
+}
+
+.reviewCard__score strong {
+  display: block;
+  color: #111;
+  font-size: 68px;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.reviewCard__link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 16px;
+  color: #5f6976;
+  text-decoration: underline;
+}
+
+.reviewCard__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.reviewCard__btn {
+  min-width: 150px;
+  text-align: center;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 33px;
+  font-weight: 700;
+  color: #fff;
+  background: #ff6a00;
+}
+
+.reviewCard__visit {
+  font-size: 16px;
+  color: #616b78;
+  text-decoration: underline;
+}
+
+.reviewCard__terms {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 8px;
+  margin: 0;
+  color: #8a9098;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+@media (max-width: 1199px) {
+  .reviewHero__title { font-size: 42px; }
+  .reviewHero__text { font-size: 24px; max-width: 620px; }
+  .reviewWrap__title { font-size: 34px; }
+  .reviewHeader { display: none; }
+  .reviewCard {
+    grid-template-columns: 34px 120px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px 10px 62px;
+  }
+  .reviewCard__rating,
+  .reviewCard__score,
+  .reviewCard__cta {
+    grid-column: 3;
+  }
+  .reviewCard__score strong { font-size: 42px; }
+  .reviewCard__btn { min-width: 132px; font-size: 20px; padding: 10px 14px; }
+  .reviewCard__amount { font-size: 28px; }
+  .reviewCard__subtitle { font-size: 18px; }
+  .reviewCard__promo { font-size: 14px; }
+}
+
+@media (max-width: 699px) {
+  .reviewHero__inner { min-height: auto; padding-bottom: 24px; }
+  .reviewHero__title { font-size: 34px; }
+  .reviewHero__text { font-size: 16px; }
+  .reviewWrap__title { font-size: 28px; }
+  .reviewCard {
+    grid-template-columns: 1fr;
+    padding-bottom: 64px;
+  }
+  .reviewCard__rank,
+  .reviewCard__brand {
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .reviewCard__logo {
+    width: 64px;
+    height: 64px;
+    font-size: 10px;
+  }
+  .reviewCard__rating,
+  .reviewCard__score,
+  .reviewCard__cta {
+    grid-column: auto;
+    align-items: flex-start;
+  }
+  .reviewCard__score strong { font-size: 34px; }
 }
 
 .dpage__state {

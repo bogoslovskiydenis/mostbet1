@@ -9,6 +9,10 @@ const isPromoSectionActive = computed(
   () => route.path.startsWith('/admin/pages') || route.path.startsWith('/admin/promo-news'),
 )
 
+const isReviewSectionActive = computed(
+  () => route.path.startsWith('/admin/review'),
+)
+
 function logout() {
   try {
     navigator.sendBeacon?.('/api/admin/logout')
@@ -59,6 +63,14 @@ function logout() {
             News
           </NuxtLink>
         </div>
+
+        <NuxtLink
+          to="/admin/review"
+          class="admin-layout__link"
+          :class="{ 'admin-layout__link--active': isReviewSectionActive }"
+        >
+          Review
+        </NuxtLink>
 
         <NuxtLink to="/admin/navbar" class="admin-layout__link">
           Navbar

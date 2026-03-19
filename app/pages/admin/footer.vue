@@ -79,6 +79,7 @@ async function save() {
 </script>
 
 <template>
+  <ClientOnly>
   <div>
     <h1 class="admin-page__title">
       Footer
@@ -114,6 +115,7 @@ async function save() {
       </button>
     </form>
   </div>
+  </ClientOnly>
 </template>
 
 <style scoped>

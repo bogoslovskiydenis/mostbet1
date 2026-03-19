@@ -62,7 +62,7 @@
   {
     "slug": "_sys_navbar",
     "title": "Navbar",
-    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  }\n}"
+    "content": "{\n  \"ru\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Промокод\",\n        \"href\": \"/promo-code\"\n      },\n      {\n        \"label\": \"Ревью\",\n        \"href\": \"/review\"\n      }\n    ]\n  },\n  \"en\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"Promocode\",\n        \"href\": \"/promo-code\"\n      },\n      {\n        \"label\": \"Review\",\n        \"href\": \"/review\"\n      }\n    ]\n  },\n  \"de\": {\n    \"brandText\": \"\",\n    \"logoUrl\": \"\",\n    \"signInLabel\": \"\",\n    \"signInHref\": \"\",\n    \"links\": [\n      {\n        \"label\": \"ПромокодДЕ\",\n        \"href\": \"/promo-code\"\n      }\n    ]\n  }\n}"
   },
   {
     "slug": "13213",
@@ -74,6 +74,19 @@
         "badge": "31312312",
         "description": "3123123",
         "ctaText": "31321"
+      }
+    }
+  },
+  {
+    "slug": "review",
+    "bannerUrl": "",
+    "locales": {
+      "en": {
+        "title": "Review",
+        "content": "{\n  \"heroTitle\": \"Review\",\n  \"heroDescription\": \"Detailed review of the official MostBet website.\",\n  \"sectionTitle\": \"Top Betting Sites\",\n  \"showCryptoLabel\": \"Show crypto\",\n  \"showCryptoDefault\": false,\n  \"columns\": {\n    \"playerRating\": \"Player Rating\",\n    \"ourScore\": \"Our Score\",\n    \"secure\": \"Secure\",\n    \"trusted\": \"Trusted\",\n    \"verified\": \"Verified\"\n  },\n  \"cards\": [\n    {\n      \"rank\": 1,\n      \"name\": \"MOSTBET\",\n      \"offer\": \"$ 300\",\n      \"score\": \"9.9\",\n      \"scoreVotes\": 60,\n      \"visitLabel\": \"Visit Mostbet\",\n      \"promo\": \"HUGE\",\n      \"subtitle\": \"Deposit $200. Get $300 with promocode HUGE\",\n      \"extra\": \"Mostbet Promo Code\",\n      \"terms\": \"Mostbet: Use promo code HUGE. Deposit up to $200. Get a 150% bonus up to $300 & 250 Free Spins. 18+ only. T&Cs apply.\",\n      \"getBonusLabel\": \"Get Bonus\",\n      \"findOutLabel\": \"Find out more\",\n      \"offerLink\": \"#\",\n      \"findOutLink\": \"#\",\n      \"visitLink\": \"#\"\n    },\n    {\n      \"rank\": 2,\n      \"name\": \"GGPOKER\",\n      \"offer\": \"$ 600\",\n      \"score\": \"9.8\",\n      \"scoreVotes\": 0,\n      \"visitLabel\": \"Visit GGPoker\",\n      \"promo\": \"NEWBONUS\",\n      \"subtitle\": \"$600 sign up bonus\",\n      \"extra\": \"Bonus Code\",\n      \"terms\": \"GGPoker: Use the promo code NEWBONUS. 18+ only. Gamble responsibly.\",\n      \"getBonusLabel\": \"Get Bonus\",\n      \"findOutLabel\": \"Find out more\",\n      \"offerLink\": \"#\",\n      \"findOutLink\": \"#\",\n      \"visitLink\": \"#\"\n    },\n    {\n      \"rank\": 3,\n      \"name\": \"BC.GAME\",\n      \"offer\": \"$ 20000\",\n      \"score\": \"9.6\",\n      \"scoreVotes\": 0,\n      \"visitLabel\": \"Visit BC.Game Sport\",\n      \"promo\": \"NEWBONUS\",\n      \"subtitle\": \"$20,000 use code NEWBONUS\",\n      \"extra\": \"Promo code\",\n      \"terms\": \"Bc.Game Sport: Join with promo code NEWBONUS and get up to $20,000 as a bonus. Over 18s. T&Cs apply.\",\n      \"getBonusLabel\": \"Get Bonus\",\n      \"findOutLabel\": \"Find out more\",\n      \"offerLink\": \"#\",\n      \"findOutLink\": \"#\",\n      \"visitLink\": \"#\"\n    },\n    {\n      \"rank\": 4,\n      \"name\": \"RAZED\",\n      \"offer\": \"$ 300\",\n      \"score\": \"9.6\",\n      \"scoreVotes\": 0,\n      \"visitLabel\": \"Visit Razed\",\n      \"promo\": \"MAXBET\",\n      \"subtitle\": \"$300 Cash Match use referral code MAXBET\",\n      \"extra\": \"Referral Code\",\n      \"terms\": \"Razed: Open an account with referral code MAXBET and get a $300 welcome bonus. Deposit $500. 18+ only.\",\n      \"getBonusLabel\": \"Get Bonus\",\n      \"findOutLabel\": \"Find out more\",\n      \"offerLink\": \"#\",\n      \"findOutLink\": \"#\",\n      \"visitLink\": \"#\"\n    },\n{\n      \"rank\": 5,\n      \"name\": \"RAZED\",\n      \"offer\": \"$ 300\",\n      \"score\": \"9.6\",\n      \"scoreVotes\": 0,\n      \"visitLabel\": \"Visit Razed\",\n      \"promo\": \"MAXBET\",\n      \"subtitle\": \"$300 Cash Match use referral code MAXBET\",\n      \"extra\": \"Referral Code\",\n      \"terms\": \"Razed: Open an account with referral code MAXBET and get a $300 welcome bonus. Deposit $500. 18+ only.\",\n      \"getBonusLabel\": \"Get Bonus\",\n      \"findOutLabel\": \"Find out more\",\n      \"offerLink\": \"#\",\n      \"findOutLink\": \"#\",\n      \"visitLink\": \"#\"\n    }\n  ]\n}",
+        "badge": "",
+        "description": "Detailed review of the official MostBet website.",
+        "ctaText": ""
       }
     }
   }
