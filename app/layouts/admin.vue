@@ -78,6 +78,9 @@ function logout() {
         <NuxtLink to="/admin/locales" class="admin-layout__link">
           Языки
         </NuxtLink>
+        <NuxtLink to="/admin/seo" class="admin-layout__link">
+          SEO
+        </NuxtLink>
       </nav>
 
       <button type="button" class="admin-layout__logout" @click="logout">

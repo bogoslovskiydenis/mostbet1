@@ -2,6 +2,7 @@
 import AppHeader from '~/components/AppHeader.vue'
 
 const { th } = useLocaleMessages()
+const route = useRoute()
 
 type FooterSettings = {
   brandText?: string
@@ -15,8 +16,24 @@ type PageItem = {
   content: string
 }
 
+type SeoSettings = {
+  metaTitle?: string
+  metaDescription?: string
+  metaKeywords?: string
+  metaRobots?: string
+  canonicalBaseUrl?: string
+  canonicalUrl?: string
+  faviconUrl?: string
+  ogTitle?: string
+  ogDescription?: string
+  ogImage?: string
+}
+
 const { data: footerPage } = useFetch<PageItem | null>('/api/admin/pages', {
   query: { slug: '_sys_footer' },
+})
+const { data: seoPage } = useFetch<PageItem | null>('/api/admin/pages', {
+  query: { slug: '_sys_seo' },
 })
 
 const footerSettings = computed<FooterSettings>(() => {
@@ -34,6 +51,54 @@ const footerSettings = computed<FooterSettings>(() => {
 const footerBrandText = computed(() => footerSettings.value.brandText || 'MOSTBET')
 const footerCopyright = computed(() => footerSettings.value.copyrightText || 'Copyright © 2026 MostBet.')
 const footerLegal = computed(() => footerSettings.value.legalText || th('home.footer.legal'))
+
+const seoSettings = computed<SeoSettings>(() => {
+  const raw = seoPage.value?.content || ''
+  if (!raw) return {}
+  try {
+    return JSON.parse(raw) as SeoSettings
+  } catch {
+    return {}
+  }
+})
+
+const canonicalHref = computed(() => {
+  const canonicalUrl = seoSettings.value.canonicalUrl?.trim()
+  if (canonicalUrl) return canonicalUrl
+  const base = seoSettings.value.canonicalBaseUrl?.trim()
+  if (!base) return ''
+  const normalizedBase = base.replace(/\/+$/, '')
+  const path = route.path === '/' ? '' : route.path
+  return `${normalizedBase}${path}`
+})
+
+useHead(() => {
+  const settings = seoSettings.value
+  const metaTitle = settings.metaTitle?.trim() || undefined
+  const metaDescription = settings.metaDescription?.trim() || undefined
+  const metaKeywords = settings.metaKeywords?.trim() || undefined
+  const metaRobots = settings.metaRobots?.trim() || undefined
+  const ogTitle = settings.ogTitle?.trim() || metaTitle
+  const ogDescription = settings.ogDescription?.trim() || metaDescription
+  const ogImage = settings.ogImage?.trim() || undefined
+  const faviconUrl = settings.faviconUrl?.trim() || undefined
+
+  return {
+    ...(metaTitle ? { title: metaTitle } : {}),
+    meta: [
+      ...(metaDescription ? [{ name: 'description', content: metaDescription }] : []),
+      ...(metaKeywords ? [{ name: 'keywords', content: metaKeywords }] : []),
+      ...(metaRobots ? [{ name: 'robots', content: metaRobots }] : []),
+      ...(ogTitle ? [{ property: 'og:title', content: ogTitle }] : []),
+      ...(ogDescription ? [{ property: 'og:description', content: ogDescription }] : []),
+      ...(ogImage ? [{ property: 'og:image', content: ogImage }] : []),
+    ],
+    link: [
+      ...(canonicalHref.value ? [{ rel: 'canonical', href: canonicalHref.value }] : []),
+      ...(faviconUrl ? [{ rel: 'icon', href: faviconUrl }] : []),
+    ],
+  }
+})
 </script>
 
 <template>
